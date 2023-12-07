@@ -260,13 +260,13 @@ public class RC_Firewalls extends LinearOpMode {
             if (gamepad2.right_bumper){
 
 
-                lift.setPower(.5);
+                lift.setPower(.3);
             }
             // arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
 
             else if (gamepad2.left_bumper){
 
-                lift.setPower(-.5);
+                lift.setPower(-.3);
                 // arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
 
             }
@@ -295,9 +295,9 @@ public class RC_Firewalls extends LinearOpMode {
                 intake.setPower(0);
             }
             if (gamepad2.left_stick_y>0){
-                wrist.setPower(.2);
+                wrist.setPower(.17);
             } else if (gamepad2.left_stick_y<0) {
-                wrist.setPower(-.2);
+                wrist.setPower(-.17);
             }
             else {
                 wrist.setPower(0);

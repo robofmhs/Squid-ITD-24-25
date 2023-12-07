@@ -38,6 +38,7 @@
      @Override
      public void runOpMode() {
          RobotBaseMovementService base = new RobotBaseMovementService();
+         Cam2 prop = new Cam2();
          telemetry.addData("Status", "Initialized");
          telemetry.update();
          int count=0;

@@ -37,8 +37,10 @@ public class Cam2 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    public OpenCvWebcam webcam ;
-
+    public OpenCvWebcam webcam;
+    boolean Left= false;
+     boolean Right = false;
+     boolean Center = false;
 
     @Override
     public void runOpMode() {
@@ -88,11 +90,6 @@ public class Cam2 extends LinearOpMode {
         waitForStart();
         runtime.reset();
         while (opModeIsActive()) {
-
-
-
-
-
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
@@ -151,8 +148,8 @@ public class Cam2 extends LinearOpMode {
 
             input.copyTo(output);
             Imgproc.rectangle(output, leftrect, rectColor, 2);
-            Imgproc.rectangle(output, centerrect, rectColor, 2);
-            Imgproc.rectangle(output, rightrect, rectColor, 2);
+            Imgproc.rectangle(output, centerrect, new Scalar(0,255,0), 2);
+            Imgproc.rectangle(output, rightrect, new Scalar(0,0,255), 2);
 
             leftCrop = YCbCr.submat(leftrect);
             centerCrop = YCbCr.submat(centerrect);
@@ -172,14 +169,17 @@ public class Cam2 extends LinearOpMode {
 
             if (leftavgfin > rightavgfin && leftavgfin>centeravgfin) {
                 telemetry.addLine("Left");
+                Left=true;
                 telemetry.update();
             }
             else if (leftavgfin < rightavgfin&& rightavgfin>centeravgfin) {
                 telemetry.addLine("Right");
+                Right=true;
                 telemetry.update();
             }
             else if (leftavgfin < centeravgfin && rightavgfin<centeravgfin) {
                 telemetry.addLine("Center");
+                Center=true;
                 telemetry.update();            }
 
             return (output);
