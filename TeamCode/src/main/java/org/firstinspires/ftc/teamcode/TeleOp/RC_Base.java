@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 
-@TeleOp(name = "RC_Firewalls", group = "Linear Opmode")
-public class RC_Firewalls extends LinearOpMode {
+@TeleOp(name = "RC_Base", group = "Linear Opmode")
+public class RC_Base extends LinearOpMode {
 
 
     // NEVER CHANGE SPEED
@@ -21,10 +21,10 @@ public class RC_Firewalls extends LinearOpMode {
 
 
     enum StrafeDirection {
-        BACKWARD(0.8f , -0.8f , 0.8f , -0.8f ),
-        FORWARD(-0.8f , 0.8f , -0.8f , 0.8f ),
-        LEFT(.8f, .8f, -.8f, -.8f),
-        RIGHT(-.8f, -.8f, .8f, .8f),
+        BACKWARD(0.6f , -0.6f , 0.6f , -0.6f ),
+        FORWARD(-0.6f , 0.6f , -0.6f , 0.6f ),
+        LEFT(.6f, .6f, -.6f, -.6f),
+        RIGHT(-.6f, -.6f, .6f, .6f),
         START(0.0f, 0.0f, 0.0f, 0.0f),
         TURNLEFT(0.5f, 0.5f, 0.5f, 0.5f),
         TURNRIGHT(-0.5f, -0.5f, -0.5f, -0.5f);
@@ -172,9 +172,9 @@ public class RC_Firewalls extends LinearOpMode {
         while (opModeIsActive()) {
 
 
-            if (gamepad1.left_stick_x < 0 || gamepad1.left_stick_x > 0 ||
-                    gamepad1.left_stick_y < 0 || gamepad1.left_stick_y > 0 ||
-                    gamepad1.right_stick_x < 0 || gamepad1.right_stick_x > 0) {
+            if (gamepad2.left_stick_x < 0 || gamepad2.left_stick_x > 0 ||
+                    gamepad2.left_stick_y < 0 || gamepad2.left_stick_y > 0 ||
+                    gamepad2.right_stick_x>0 || gamepad2.right_stick_x<0) {
 
 // turret
                 telemetry.addData("working", "yes");
@@ -187,27 +187,27 @@ public class RC_Firewalls extends LinearOpMode {
 
                 // base
 
-                if (gamepad1.left_stick_x < 0) {
+                if (gamepad2.left_stick_x < 0) {
                     strafe(StrafeDirection.LEFT);
                 }
 
-                if (gamepad1.left_stick_x > 0) {
+                if (gamepad2.left_stick_x > 0) {
                     strafe(StrafeDirection.RIGHT);
                 }
 
-                if (gamepad1.left_stick_y > 0) {
+                if (gamepad2.left_stick_y > 0) {
                     strafe(StrafeDirection.BACKWARD);
                 }
 
-                if (gamepad1.left_stick_y < 0) {
+                if (gamepad2.left_stick_y < 0) {
                     strafe(StrafeDirection.FORWARD);
                 }
 
-                if (gamepad1.right_stick_x < 0) {
+                if (gamepad2.right_stick_x<0) {
                     strafe(StrafeDirection.TURNLEFT);
                 }
 
-                if (gamepad1.right_stick_x > 0) {
+                if (gamepad2.right_stick_x>0) {
                     strafe(StrafeDirection.TURNRIGHT);
                 }
 
@@ -216,24 +216,13 @@ public class RC_Firewalls extends LinearOpMode {
             }
 
 // gripper
-            if (gamepad1.left_bumper) {
-                reduceSpeed();
-            }
-            if (gamepad2.right_bumper) {
-                lift.setPower(1);
-                // arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
-            }
-            else if (gamepad2.left_bumper) {
-                lift.setPower(-1);
-                // arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
-
-            }
-            else {
-                lift.setPower(0);
-
-            }
-            if (gamepad1.right_bumper) {
+            if (gamepad2.left_trigger>0) {
                 increaseSpeed();
+            }
+//
+
+            if (gamepad2.left_bumper) {
+                reduceSpeed();
             }
             if (gamepad2.a) {
                 arm.setVelocity(4000);
@@ -249,6 +238,7 @@ public class RC_Firewalls extends LinearOpMode {
 
             }
             else {
+
                 arm.setVelocity(0);
                 arm.setTargetPosition(arm.getCurrentPosition());
                 arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
@@ -261,26 +251,39 @@ public class RC_Firewalls extends LinearOpMode {
 
                 }
             }
-                //lift
+            //lift
 
 //            if(gamepad2.x){
 //                lift.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 //            }\6y6
 ////flywheeel
 
-                if (gamepad2.y && gamepad1.y) {
-                    fly.setPower(1.0);
-                } else {
-                    fly.setPower(0);
-                }
+            if (gamepad2.options) {
+                fly.setPower(1.0);
+            } else {
+                fly.setPower(0);
+            }
 
-                if (gamepad2.right_trigger > 0) {
-                    intake.setPower(-1.0 * gamepad2.right_trigger);
-                } else if (gamepad2.left_trigger > 0) {
-                    intake.setPower(1.0 * gamepad2.left_trigger);
-                } else {
-                    intake.setPower(0);
-                }
+            if (gamepad2.right_trigger > 0) {
+                intake.setPower(-1.0 * gamepad2.right_trigger);
+            } else if (gamepad2.right_bumper) {
+                intake.setPower(1.0 );
+            } else {
+                intake.setPower(0);
+            }
+            if (gamepad2.right_stick_button) {
+                lift.setPower(1);
+                // arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+            }
+            else if (gamepad2.left_stick_button) {
+                lift.setPower(-1);
+                // arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+
+            }
+            else {
+                lift.setPower(0);
+
+            }
 //            if (gamepad2.left_stick_y>0){
 //                wrist.setPower(.17);
 //            } else if (gamepad2.left_stick_y<0) {
@@ -297,36 +300,36 @@ public class RC_Firewalls extends LinearOpMode {
 //            else {
 //                guard.setPosition(0);
 //            }
-                if(gamepad2.dpad_up){
-                    guard.setPosition(.6);
-                    arm.setVelocity(4000);
-                    arm.setTargetPosition(-2614);
-                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(1500);
-                    wrist.setPosition(.79);
-                }
-                if(gamepad2.dpad_down){
-                    arm.setVelocity(3000);
-                    arm.setVelocity(4000);
-                    arm.setTargetPosition(-1906);
-                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(1500);
-                    arm.setTargetPosition(-21);
-                    wrist.setPosition(.51888888888889);
-                    sleep(500);
-                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            if(gamepad2.y){
+                guard.setPosition(.6);
+                arm.setVelocity(4000);
+                arm.setTargetPosition(-2614);
+                arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                sleep(1500);
+                wrist.setPosition(.79);
+            }
+            if(gamepad2.guide){
+                arm.setVelocity(3000);
+                arm.setVelocity(4000);
+                arm.setTargetPosition(-1906);
+                arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+                sleep(500);
+                arm.setTargetPosition(0);
+                wrist.setPosition(.51888888888889);
+                sleep(500);
+                arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
-                }
-                if (gamepad2.left_stick_y < 0) {
-                    SlidePosition = wrist.getPosition();
-                    wrist.setPosition(SlidePosition-SlideIncrement);
-                } else if (gamepad2.left_stick_y > 0) {
-                    SlidePosition = wrist.getPosition();
-                    wrist.setPosition(SlidePosition+SlideIncrement);
-                } else {
-                    SlidePosition = wrist.getPosition();
-                    wrist.setPosition(SlidePosition);
-                }
+            }
+            if (gamepad2.dpad_up) {
+                SlidePosition = wrist.getPosition();
+                wrist.setPosition(SlidePosition-SlideIncrement);
+            } else if (gamepad2.dpad_down) {
+                SlidePosition = wrist.getPosition();
+                wrist.setPosition(SlidePosition+SlideIncrement);
+            } else {
+                SlidePosition = wrist.getPosition();
+                wrist.setPosition(SlidePosition);
+            }
 //            SlidePosition2    =    wrist2.getPosition();
 //            if    (gamepad2.right_stick_y>0){
 //                SlidePositionNegative2    =    Range.clip(SlidePosition2    -    SlideIncrement2,    SlideMin2,    SlideMax2);
@@ -342,20 +345,20 @@ public class RC_Firewalls extends LinearOpMode {
 //            }
 
 
-                telemetry.addData("Status", "Run Time: " + runtime.toString());
-                telemetry.addData("frontLeft", flMotor.getCurrentPosition());
-                telemetry.addData("bl", blMotor.getCurrentPosition());
-                telemetry.addData("frontRight", frMotor.getCurrentPosition());
-                telemetry.addData("br", brMotor.getCurrentPosition());
-                telemetry.addData("arm", arm.getCurrentPosition());
-                telemetry.addData("intake", intake.getCurrentPosition());
-                telemetry.addData("lift", lift.getCurrentPosition());
-                telemetry.addData("wrist", wrist.getPosition());
-                // telemetry.addData("hi: ",replugController);
-                telemetry.update();
-            }
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("frontLeft", flMotor.getCurrentPosition());
+            telemetry.addData("bl", blMotor.getCurrentPosition());
+            telemetry.addData("frontRight", frMotor.getCurrentPosition());
+            telemetry.addData("br", brMotor.getCurrentPosition());
+            telemetry.addData("arm", arm.getCurrentPosition());
+            telemetry.addData("intake", intake.getCurrentPosition());
+            telemetry.addData("lift", lift.getCurrentPosition());
+            telemetry.addData("wrist", wrist.getPosition());
+            // telemetry.addData("hi: ",replugController);
+            telemetry.update();
         }
     }
+}
 
 
 

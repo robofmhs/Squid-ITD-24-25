@@ -124,91 +124,100 @@ public class Cam2 extends LinearOpMode {
 
 
     }
-    class samplePipeline extends OpenCvPipeline {
-        Cam2 web = new Cam2();
-        boolean viewportPaused;
-        Mat YCbCr = new Mat();
-        Mat leftCrop;
-        Mat rightCrop;
-        Mat centerCrop;
-        double leftavgfin;
-        double centeravgfin;
-        double rightavgfin;
+        class samplePipeline extends OpenCvPipeline {
+            Cam2 web = new Cam2();
+            boolean viewportPaused;
+            Mat YCbCr = new Mat();
+            Mat leftCrop;
+            Mat rightCrop;
+            Mat centerCrop;
+            double leftavgfin;
+            double centeravgfin;
+            double rightavgfin;
 
-        Mat output = new Mat();
-        Scalar rectColor = new Scalar(255, 0, 0);
+            Mat output = new Mat();
+            Scalar rectColor = new Scalar(255, 0, 0);
 
-        public Mat processFrame(Mat input) {
-            Imgproc.cvtColor(input, YCbCr, Imgproc.COLOR_RGB2YCrCb);
-            telemetry.addLine("pipeline running╰(*°▽°*)╯╰(*°▽°*)╯");
-            telemetry.update();
-            Rect leftrect = new Rect(1, 1, 212, 359);
-            Rect centerrect = new Rect(213, 1, 212, 359);
-            Rect rightrect = new Rect(426, 1, 212, 359);
-
-            input.copyTo(output);
-            Imgproc.rectangle(output, leftrect, rectColor, 2);
-            Imgproc.rectangle(output, centerrect, new Scalar(0,255,0), 2);
-            Imgproc.rectangle(output, rightrect, new Scalar(0,0,255), 2);
-
-            leftCrop = YCbCr.submat(leftrect);
-            centerCrop = YCbCr.submat(centerrect);
-            rightCrop = YCbCr.submat(rightrect);
-
-            Core.extractChannel(leftCrop, leftCrop, 2);
-            Core.extractChannel(centerCrop, centerCrop, 2);
-            Core.extractChannel(rightCrop, rightCrop, 2);
-
-            Scalar leftavg = Core.mean(leftCrop);
-            Scalar centeravg = Core.mean(centerCrop);
-            Scalar rightavg = Core.mean(rightCrop);
-
-            leftavgfin = leftavg.val[0];
-            centeravgfin = centeravg.val[0];
-            rightavgfin = rightavg.val[0];
-
-            if (leftavgfin > rightavgfin && leftavgfin>centeravgfin) {
-                telemetry.addLine("Left");
-                Left=true;
+            public Mat processFrame(Mat input) {
+                Imgproc.cvtColor(input, YCbCr, Imgproc.COLOR_RGB2YCrCb);
+                telemetry.addLine("pipeline running╰(*°▽°*)╯╰(*°▽°*)╯");
                 telemetry.update();
+                Rect leftrect = new Rect(5, 185, 10, 10);
+                Rect centerrect = new Rect(315, 140, 10, 10);
+                Rect rightrect = new Rect(627, 185, 10, 10);
+
+                input.copyTo(output);
+                Imgproc.rectangle(output, leftrect, rectColor, 2);
+                Imgproc.rectangle(output, centerrect, new Scalar(0,255,0), 2);
+                Imgproc.rectangle(output, rightrect, new Scalar(0,0,255), 2);
+
+                leftCrop = YCbCr.submat(leftrect);
+                centerCrop = YCbCr.submat(centerrect);
+                rightCrop = YCbCr.submat(rightrect);
+
+                Core.extractChannel(leftCrop, leftCrop, 0);
+                Core.extractChannel(centerCrop, centerCrop, 0);
+                Core.extractChannel(rightCrop, rightCrop, 0);
+
+                Scalar leftavg = Core.mean(leftCrop);
+                Scalar centeravg = Core.mean(centerCrop);
+                Scalar rightavg = Core.mean(rightCrop);
+
+                leftavgfin = leftavg.val[0];
+                centeravgfin = centeravg.val[0];
+                rightavgfin = rightavg.val[0];
+                telemetry.addData("Left", leftavgfin);
+                telemetry.addData("Center", centeravgfin);
+                telemetry.addData("Right", rightavgfin);
+
+                if (leftavgfin < rightavgfin && leftavgfin<centeravgfin) {
+                    telemetry.addLine("Left");
+                    Left=true;
+                    Right=false;
+                    Center=false;
+                    telemetry.update();
+                }
+                else if (leftavgfin > rightavgfin&& rightavgfin<centeravgfin) {
+                    telemetry.addLine("Right");
+                    Left=false;
+                    Right=true;
+                    Center=false;
+                    telemetry.update();
+                }
+                else if (leftavgfin > centeravgfin && rightavgfin>centeravgfin) {
+                    telemetry.addLine("Center");
+                    Left=false;
+                    Right=false;
+                    Center=true;
+                    telemetry.update();            }
+
+                return (output);
+
+
             }
-            else if (leftavgfin < rightavgfin&& rightavgfin>centeravgfin) {
-                telemetry.addLine("Right");
-                Right=true;
-                telemetry.update();
+
+            @Override
+            public void onViewportTapped() {
+                /*
+                 * The viewport (if one was specified in the constructor) can also be dynamically "paused"
+                 * and "resumed". The primary use case of this is to reduce CPU, memory, and power load
+                 * when you need your vision pipeline running, but do not require a live preview on the
+                 * robot controller screen. For instance, this could be useful if you wish to see the live
+                 * camera preview as you are initializing your robot, but you no longer require the live
+                 * preview after you have finished your initialization process; pausing the viewport does
+                 * not stop running your pipeline.
+                 *
+                 * Here we demonstrate dynamically pausing/resuming the viewport when the user taps it
+                 */
+
+                viewportPaused = !viewportPaused;
+
+                if (viewportPaused) {
+                    web.webcam.pauseViewport();
+                } else {
+                    web.webcam.resumeViewport();
+                }
             }
-            else if (leftavgfin < centeravgfin && rightavgfin<centeravgfin) {
-                telemetry.addLine("Center");
-                Center=true;
-                telemetry.update();            }
-
-            return (output);
-
-
         }
-
-        @Override
-        public void onViewportTapped() {
-            /*
-             * The viewport (if one was specified in the constructor) can also be dynamically "paused"
-             * and "resumed". The primary use case of this is to reduce CPU, memory, and power load
-             * when you need your vision pipeline running, but do not require a live preview on the
-             * robot controller screen. For instance, this could be useful if you wish to see the live
-             * camera preview as you are initializing your robot, but you no longer require the live
-             * preview after you have finished your initialization process; pausing the viewport does
-             * not stop running your pipeline.
-             *
-             * Here we demonstrate dynamically pausing/resuming the viewport when the user taps it
-             */
-
-            viewportPaused = !viewportPaused;
-
-            if (viewportPaused) {
-                web.webcam.pauseViewport();
-            } else {
-                web.webcam.resumeViewport();
-            }
-        }
-    }
 
 }
