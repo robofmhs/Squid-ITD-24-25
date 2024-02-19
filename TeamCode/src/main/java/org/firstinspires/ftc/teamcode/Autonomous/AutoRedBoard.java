@@ -9,9 +9,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorTouch;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
@@ -55,9 +57,11 @@ public class AutoRedBoard extends LinearOpMode {
     private Servo wrist = null;
     private Servo guard = null;
     private DcMotorEx arm =null;
+
+
+
     @Override
     public void runOpMode() throws InterruptedException {
-        RobotBaseMovementService base = new RobotBaseMovementService();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam  "), cameraMonitorViewId);
         webcam.setPipeline(new AutoRedBoard.samplePipeline());
@@ -98,7 +102,10 @@ public class AutoRedBoard extends LinearOpMode {
         arm =hardwareMap.get(DcMotorEx.class, "arm");
         wrist = hardwareMap.get(Servo.class, "wrist");
         guard = hardwareMap.get(Servo.class, "wrist2");
+
         telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
         telemetry.update();
         int count=0;
          /*
@@ -122,10 +129,10 @@ public class AutoRedBoard extends LinearOpMode {
 //        flMotor.setPower(.3);
 //        brMotor.setPower(.3);
 //        blMotor.setPower(.3);
-
+        wrist.setPosition(.488);
         drop.setPosition(.01);
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
-        // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
+        // Pushing the left sti ck forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
 
         // Wait for the game to start (driver presses PLAY)
@@ -162,29 +169,29 @@ public class AutoRedBoard extends LinearOpMode {
             while(count==0){
                 sleep(1000);
                 if(Left){
-                    encoderDrive(FORWARD,DRIVE_SPEED,25,25,500);
+                    encoderDrive(FORWARD,DRIVE_SPEED,24,24,500);
                     sleep(500);
                     encoderDrive(LEFTSLIDE,DRIVE_SPEED,6,6,500);
-                    sleep(500);
+                    sleep(800);
                     drop.setPosition(.4);
                     sleep(800);
                     encoderDrive(RIGHTSLIDE,DRIVE_SPEED,39,39,500);
-                    sleep(2000);
+                    sleep(500);
                     encoderDrive(RIGHT,DRIVE_SPEED,24,24,500);
-                    sleep(2000);
-                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,8,8,500);
-                    sleep(2000);
+                    sleep(500);
+                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,8.5,8.5,500);
+                    sleep(500);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1500);
+                    arm.setTargetPosition(-1300);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1501);
+                    arm.setTargetPosition(-1301);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
+                    sleep(1000);
                     wrist.setPosition(.878333333334);
-                    sleep(2000);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,13,13,500);
-                    sleep(2000);
+                    sleep(500);
+                    encoderDrive(BACKWARD,DRIVE_SPEED,15,15,500);
+                    sleep(500);
                     guard.setPosition(.2);
                     sleep(1000);
                     arm.setVelocity(3000);
@@ -193,17 +200,19 @@ public class AutoRedBoard extends LinearOpMode {
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-1901);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
-                    encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
-                    sleep(2000);
+                    sleep(500);
+                    encoderDrive(FORWARD,DRIVE_SPEED,5,5,500);
+                    sleep(500);
                     encoderDrive(RIGHTSLIDE,DRIVE_SPEED,20,20,500);
+                    wrist.setPosition(.488);
+                    sleep(500);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-20);
+                    arm.setTargetPosition(-500);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-21);
+                    arm.setTargetPosition(-501);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(3000);
+                    sleep(1500);
                     encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
 //                    sleep(1500);
 //                    sleep(2000);
@@ -229,22 +238,22 @@ public class AutoRedBoard extends LinearOpMode {
                     drop.setPosition(.5);
                     sleep(800);
                     encoderDrive(RIGHTSLIDE,DRIVE_SPEED,17,17,500);
-                    sleep(2000);
+                    sleep(500);
                     encoderDrive(RIGHT,DRIVE_SPEED,24,24,500);
-                    sleep(2000);
+                    sleep(500);
                     encoderDrive(LEFTSLIDE,DRIVE_SPEED,7,7,500);
-                    sleep(2000);
+                    sleep(500);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1500);
+                    arm.setTargetPosition(-1300);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1501);
+                    arm.setTargetPosition(-1301);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
+                    sleep(500);
                     wrist.setPosition(.878333333334);
-                    sleep(2000);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
-                    sleep(2000);
+                    sleep(1000);
+                    encoderDrive(BACKWARD,DRIVE_SPEED,13,13,500);
+                    sleep(500);
                     guard.setPosition(.2);
                     sleep(1000);
                     arm.setVelocity(3000);
@@ -254,16 +263,19 @@ public class AutoRedBoard extends LinearOpMode {
                     arm.setTargetPosition(-1901);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     sleep(2000);
-                    encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
-                    sleep(2000);
-                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,34,34,500);
+                    encoderDrive(FORWARD,DRIVE_SPEED,5,5,500);
+                    sleep(500);
+                    encoderDrive(RIGHTSLIDE, DRIVE_SPEED, 38, 38, 500);
+
+                    wrist.setPosition(.488);
+                    sleep(500);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-20);
+                    arm.setTargetPosition(-500);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-21);
+                    arm.setTargetPosition(-501);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(3000);
+                    sleep(1500);
                     encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
 //                    sleep(1500);
 //                    base.driveLeft(300,.3);
@@ -279,25 +291,25 @@ public class AutoRedBoard extends LinearOpMode {
 //                    base.guard.setPosition(1);
                 }
                 else if(Center){
-                    encoderDrive(FORWARD,DRIVE_SPEED,27,27,500);
-                    sleep(3000);
+                    encoderDrive(FORWARD,DRIVE_SPEED,25,25,500);
+                    sleep(800);
                     drop.setPosition(.4);
-                    sleep(1000);
+                    sleep(800);
                     encoderDrive(RIGHTSLIDE,DRIVE_SPEED,39,39,500);
-                    sleep(2000);
+                    sleep(500);
                     encoderDrive(RIGHT,DRIVE_SPEED,24,24,500);
-                    sleep(2000);
+                    sleep(500);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1500);
+                    arm.setTargetPosition(-1300);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1501);
+                    arm.setTargetPosition(-1301);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
+                    sleep(500);
                     wrist.setPosition(.878333333334);
-                    sleep(2000);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,7,7,500);
-                    sleep(2000);
+                    sleep(500);
+                    encoderDrive(BACKWARD,DRIVE_SPEED,9,9,500);
+                    sleep(500);
                     guard.setPosition(.2);
                     sleep(1000);
                     arm.setVelocity(3000);
@@ -306,17 +318,20 @@ public class AutoRedBoard extends LinearOpMode {
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-1901);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
-                    encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
-                    sleep(2000);
+                    sleep(1000);
+                    encoderDrive(FORWARD,DRIVE_SPEED,5,5,500);
+                    sleep(500);
                     encoderDrive(RIGHTSLIDE,DRIVE_SPEED,27,27,500);
+
+                    wrist.setPosition(.488);
+                    sleep(500);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-20);
+                    arm.setTargetPosition(-500);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-21);
+                    arm.setTargetPosition(-501);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(3000);
+                    sleep(1500);
                     encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
 //                    sleep(1500);
 
@@ -366,9 +381,9 @@ public class AutoRedBoard extends LinearOpMode {
             Imgproc.cvtColor(input, YCbCr, Imgproc.COLOR_RGB2YCrCb);
             telemetry.addLine("pipeline running╰(*°▽°*)╯╰(*°▽°*)╯");
             telemetry.update();
-            Rect leftrect = new Rect(5, 185, 10, 10);
-            Rect centerrect = new Rect(315, 140, 10, 10);
-            Rect rightrect = new Rect(627, 185, 10, 10);
+            Rect leftrect = new Rect(5, 200, 10, 10);
+            Rect centerrect = new Rect(315, 170, 10, 10);
+            Rect rightrect = new Rect(610, 210, 10, 10);
 
             input.copyTo(output);
             Imgproc.rectangle(output, leftrect, rectColor, 2);
@@ -399,6 +414,8 @@ public class AutoRedBoard extends LinearOpMode {
                 Left=true;
                 Right=false;
                 Center=false;
+
+
                 telemetry.update();
             }
             else if (leftavgfin > rightavgfin&& rightavgfin<centeravgfin) {
@@ -406,6 +423,8 @@ public class AutoRedBoard extends LinearOpMode {
                 Left=false;
                 Right=true;
                 Center=false;
+
+
                 telemetry.update();
             }
             else if (leftavgfin > centeravgfin && rightavgfin>centeravgfin) {
@@ -413,6 +432,8 @@ public class AutoRedBoard extends LinearOpMode {
                 Left=false;
                 Right=false;
                 Center=true;
+
+
                 telemetry.update();            }
 
             return (output);
@@ -615,7 +636,7 @@ public class AutoRedBoard extends LinearOpMode {
             flMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             frMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            //  sleep(250);   // optional pause after each move
+//              sleep(500);   // optional pause after each move
         }
     }
 

@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorTouch;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -55,9 +56,9 @@ public class AutoBlueStack extends LinearOpMode {
     private Servo wrist = null;
     private Servo guard = null;
     private DcMotorEx arm =null;
+    private long delay = 4000;
     @Override
     public void runOpMode() throws InterruptedException {
-        RobotBaseMovementService base = new RobotBaseMovementService();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam  "), cameraMonitorViewId);
         webcam.setPipeline(new AutoBlueStack.samplePipeline());
@@ -100,6 +101,7 @@ public class AutoBlueStack extends LinearOpMode {
         guard = hardwareMap.get(Servo.class, "wrist2");
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
         int count=0;
          /*
           Initialize the hardware variables. Note that the strings used here as parameters
@@ -122,6 +124,7 @@ public class AutoBlueStack extends LinearOpMode {
 //        flMotor.setPower(.3);
 //        brMotor.setPower(.3);
 //        blMotor.setPower(.3);
+        wrist.setPosition(.488);
 
         drop.setPosition(.01);
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -163,32 +166,28 @@ public class AutoBlueStack extends LinearOpMode {
                 sleep(1000);
                 if(Left){
                     encoderDrive(FORWARD,DRIVE_SPEED,25,25,500);
-                    sleep(500);
                     encoderDrive(LEFTSLIDE,DRIVE_SPEED,7,7,500);
                     sleep(800);
                     drop.setPosition(.5);
                     sleep(800);
-                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,7,7,500);
-                    sleep(2000);
-                    encoderDrive(FORWARD,DRIVE_SPEED,25,25,500);
-                    sleep(2000);
+                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,8,8,500);
+                    encoderDrive(FORWARD,DRIVE_SPEED,27,27,500);
+                    sleep(delay);
                     encoderDrive(LEFTSLIDE,DRIVE_SPEED,90,90,500);
-                    sleep(2000);
                     encoderDrive(LEFT,DRIVE_SPEED,23,23,500);
-                    sleep(2000);
-                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,30,30,500);
-                    sleep(2000);
+                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,36,36,500);
+                    sleep(1000);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1300);
+                    arm.setTargetPosition(-1350);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1301);
+                    arm.setTargetPosition(-1351);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
+                    sleep(1000);
                     wrist.setPosition(.878333333334);
-                    sleep(2000);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
-                    sleep(2000);
+                    sleep(500);
+                    encoderDrive(BACKWARD,DRIVE_SPEED,13.5,13.5,500);
+                    sleep(500);
                     guard.setPosition(.2);
                     sleep(1000);
                     arm.setVelocity(3000);
@@ -197,62 +196,55 @@ public class AutoBlueStack extends LinearOpMode {
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-1901);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
-                    encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
-                    sleep(2000);
-                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,34,34,500);
-                    arm.setVelocity(3000);
-                    arm.setTargetPosition(-20);
-                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    arm.setVelocity(3000);
-                    arm.setTargetPosition(-21);
-                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(3000);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
+
+//                    sleep(500);
+//                    encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
+//                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,37,37,500);
+//                    sleep(500);
+//
+//                    wrist.setPosition(.488);
+//                    sleep(500);
+//                    arm.setVelocity(3000);
+//                    arm.setTargetPosition(-100);
+//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+//                    arm.setVelocity(3000);
+//                    arm.setTargetPosition(-101);
+//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 //                    sleep(1500);
-//                    sleep(2000);
-//                    base.turnLeft(1900,.3);
-//                    sleep(1500);
-//                    base.driveRight(1725,.3);
-//                    sleep(1200);
-//                    base.arm.setPower(-.3);
-//                    sleep(1200);
-//                    base.arm.setPower(0);
-//                    sleep(1000);
-//                    base.driveBack(540,.3);
-//                    base.wrist.setPosition(1);
-//                    sleep(2000);
-//                    base.guard.setPosition(1);
+//                    encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
+
+//
 
                 }
                 else if(Right){
 
 
 
-                    encoderDrive(FORWARD,DRIVE_SPEED,25.5,25.5,500);
-                    sleep(500);
+                    encoderDrive(FORWARD,DRIVE_SPEED,25,25,500);
                     encoderDrive(RIGHTSLIDE,DRIVE_SPEED,18,18,500);
                     sleep(500);
                     drop.setPosition(.4);
                     sleep(800);
                     drop.setPosition(.1);
-                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,112,112,500);
-                    sleep(2000);
-                    encoderDrive(LEFT,DRIVE_SPEED,24,24,500);
-                    sleep(2000);
-                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,8,8,500);
-                    sleep(2000);
+                    encoderDrive(BACKWARD,DRIVE_SPEED,3,3,500);
+                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,18,18,500);
+                    encoderDrive(FORWARD,DRIVE_SPEED,27,27,500);
+                    sleep(delay);
+                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,95,95,500);
+                    encoderDrive(LEFT,DRIVE_SPEED,23,23,500);
+                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,20.25,20.25,500);
+                    sleep(500);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1400);
+                    arm.setTargetPosition(-1350);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1401);
+                    arm.setTargetPosition(-1351);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
+                    sleep(1000);
                     wrist.setPosition(.878333333334);
-                    sleep(2000);
+                    sleep(500);
                     encoderDrive(BACKWARD,DRIVE_SPEED,8,8,500);
-                    sleep(2000);
+                    sleep(500);
                     guard.setPosition(.2);
                     sleep(1000);
                     arm.setVelocity(3000);
@@ -261,91 +253,49 @@ public class AutoBlueStack extends LinearOpMode {
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-1901);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
-                    encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
-                    sleep(2000);
-                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,20,20,500);
-                    arm.setVelocity(3000);
-                    arm.setTargetPosition(-20);
-                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    arm.setVelocity(3000);
-                    arm.setTargetPosition(-21);
-                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(3000);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
-
-
-//                    encoderDrive(RIGHT,DRIVE_SPEED,24,24,500);
-//                    sleep(2000);
-//                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,7,7,500);
-//                    sleep(2000);
-//                    arm.setVelocity(3000);
-//                    arm.setTargetPosition(-1500);
-//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-//                    arm.setVelocity(3000);
-//                    arm.setTargetPosition(-1501);
-//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-//                    sleep(2000);
-//                    wrist.setPosition(.878333333334);
-//                    sleep(2000);
-//                    encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
-//                    sleep(2000);
-//                    guard.setPosition(.2);
-//                    sleep(1000);
-//                    arm.setVelocity(3000);
-//                    arm.setTargetPosition(-1900);
-//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-//                    arm.setVelocity(3000);
-//                    arm.setTargetPosition(-1901);
-//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-//                    sleep(2000);
+//                    sleep(500);
 //                    encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
-//                    sleep(2000);
-//                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,34,34,500);
+//                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,23,23,500);
+//                    sleep(500);
+//
+//                    wrist.setPosition(.488);
+//                    sleep(500);
 //                    arm.setVelocity(3000);
-//                    arm.setTargetPosition(-20);
+//                    arm.setTargetPosition(-100);
 //                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 //                    arm.setVelocity(3000);
-//                    arm.setTargetPosition(-21);
+//                    arm.setTargetPosition(-101);
 //                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-//                    sleep(3000);
-//                    encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
 //                    sleep(1500);
-//                    base.driveLeft(300,.3);
-//                    sleep(1200);
-//                    base.arm.setPower(-.5);
-//                    sleep(1700);
-//                    base.arm.setPower(0);
-//                    sleep(1000);
-//                    base.driveBack(1150,.3);
-//                    sleep(5000);
-//                    base.wrist.setPosition(1);
-//                    sleep(1000);
-//                    base.guard.setPosition(1);
+//                    encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
+
+
+//
                 }
                 else if(Center){
-                    encoderDrive(FORWARD,DRIVE_SPEED,27,27,500);
-                    sleep(3000);
+                    encoderDrive(FORWARD,DRIVE_SPEED,25,25,500);
+                    sleep(800);
                     drop.setPosition(.4);
-                    sleep(1000);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,2,2,500);
-                    sleep(1000);
-                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,90,90,500);
-                    sleep(1000);
-                    encoderDrive(LEFT,DRIVE_SPEED,25,25,500);
+                    sleep(800);
+                    encoderDrive(BACKWARD,DRIVE_SPEED,3,3,500);
+                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,15,15,500);
+                    encoderDrive(FORWARD,DRIVE_SPEED,27,27,500);
+                    sleep(delay);
+                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,107,107,500);
+                    encoderDrive(LEFT,DRIVE_SPEED,23,23,500);
+                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,27,27,500);
+                    sleep(500);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1450);
+                    arm.setTargetPosition(-1375);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1451);
+                    arm.setTargetPosition(-1376);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
+                    sleep(1000);
                     wrist.setPosition(.878333333334);
-                    sleep(2000);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,8,8,500);
-                    sleep(1000);
-                    guard.setPosition(.2);
-                    sleep(1000);
+                    sleep(500);
+                    encoderDrive(BACKWARD,DRIVE_SPEED,10,10,500);
+                    sleep(500);
                     guard.setPosition(.2);
                     sleep(1000);
                     arm.setVelocity(3000);
@@ -354,70 +304,25 @@ public class AutoBlueStack extends LinearOpMode {
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-1901);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
-                    encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
-                    sleep(2000);
-                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,27,27,500);
-                    arm.setVelocity(3000);
-                    arm.setTargetPosition(-20);
-                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    arm.setVelocity(3000);
-                    arm.setTargetPosition(-21);
-                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(3000);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
-                    sleep(1500);
-
-
-//                    sleep(2000);
-//                    encoderDrive(RIGHT,DRIVE_SPEED,24,24,500);
-//                    sleep(2000);
-//                    arm.setVelocity(3000);
-//                    arm.setTargetPosition(-1500);
-//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-//                    arm.setVelocity(3000);
-//                    arm.setTargetPosition(-1501);
-//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-//                    sleep(2000);
-//                    wrist.setPosition(.878333333334);
-//                    sleep(2000);
-//                    encoderDrive(BACKWARD,DRIVE_SPEED,7,7,500);
-//                    sleep(2000);
-//                    guard.setPosition(.2);
-//                    sleep(1000);
-//                    arm.setVelocity(3000);
-//                    arm.setTargetPosition(-1900);
-//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-//                    arm.setVelocity(3000);
-//                    arm.setTargetPosition(-1901);
-//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-//                    sleep(2000);
-//                    encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
-//                    sleep(2000);
-//                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,27,27,500);
+//                    sleep(500);
+//                    encoderDrive(FORWARD,DRIVE_SPEED,5,5,500);
+//                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,29,29,500);
+//                    sleep(500);
+//
+//                    wrist.setPosition(.488);
+//                    sleep(500);
 //                    arm.setVelocity(3000);
 //                    arm.setTargetPosition(-20);
 //                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 //                    arm.setVelocity(3000);
 //                    arm.setTargetPosition(-21);
 //                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-//                    sleep(3000);
+//                    sleep(1500);
 //                    encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
 //                    sleep(1500);
 
 
-
-
-//                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,10,10,500);
-//                    sleep(1200);
-//                    base.arm.setPower(-.5);
-//                    sleep(1700);
-//                    base.arm.setPower(0);
-//                    sleep(1000);
-//                    base.driveBack(800,.3);
-//                    base.wrist.setPosition(1);
-//                    sleep(2000);
-//                    base.guard.setPosition(1);
+//
                 }
 
                 count+=1;
@@ -700,7 +605,7 @@ public class AutoBlueStack extends LinearOpMode {
             flMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             frMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            //  sleep(250);   // optional pause after each move
+              sleep(250);   // optional pause after each move
         }
     }
 
