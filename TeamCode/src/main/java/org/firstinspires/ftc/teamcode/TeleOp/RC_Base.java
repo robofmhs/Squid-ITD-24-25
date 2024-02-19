@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -152,6 +153,16 @@ public class RC_Base extends LinearOpMode {
         wrist = hardwareMap.get(Servo.class, "wrist");
         guard = hardwareMap.get(Servo.class, "wrist2");
         servoo = hardwareMap.get(CRServo.class, "servoo");
+        wrist.setPosition(.488);
+        frMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        brMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        flMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        blMotor.setDirection(DcMotorEx.Direction.REVERSE);
+
+        frMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        flMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        brMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        blMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         double SlidePositionPositive;
         double SlidePositionNegative;
         double SlidePosition = wrist.getPosition();
@@ -170,69 +181,94 @@ public class RC_Base extends LinearOpMode {
 // slide
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            double y = -gamepad2.left_stick_y; // Remember, Y stick value is reversed
+            double x = gamepad2.left_stick_x * 1.1; // Counteract imperfect strafing
+            double rx = gamepad2.right_stick_x;
 
+            // Denominator is the largest motor power (absolute value) or 1
+            // This ensures all the powers maintain the same ratio,
+            // but only if at least one is out of the range [-1, 1]
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            double frontLeftPower = (y + x + rx) / denominator;
+            double backLeftPower = (y - x + rx) / denominator;
+            double frontRightPower = (y - x - rx) / denominator;
+            double backRightPower = (y + x - rx) / denominator;
 
-            if (gamepad2.left_stick_x < 0 || gamepad2.left_stick_x > 0 ||
-                    gamepad2.left_stick_y < 0 || gamepad2.left_stick_y > 0 ||
-                    gamepad2.right_stick_x>0 || gamepad2.right_stick_x<0) {
-
-// turret
-                telemetry.addData("working", "yes");
-                // if (turret.getCurrentPosition()>= 650){
-                //         turret.setPower(0.0);
-                // }
-                // else if(turret.getCurrentPosition()<=-720){
-                //         turret.setPower(0.0);
-                // }
-
-                // base
-
-                if (gamepad2.left_stick_x < 0) {
-                    strafe(StrafeDirection.LEFT);
-                }
-
-                if (gamepad2.left_stick_x > 0) {
-                    strafe(StrafeDirection.RIGHT);
-                }
-
-                if (gamepad2.left_stick_y > 0) {
-                    strafe(StrafeDirection.BACKWARD);
-                }
-
-                if (gamepad2.left_stick_y < 0) {
-                    strafe(StrafeDirection.FORWARD);
-                }
-
-                if (gamepad2.right_stick_x<0) {
-                    strafe(StrafeDirection.TURNLEFT);
-                }
-
-                if (gamepad2.right_stick_x>0) {
-                    strafe(StrafeDirection.TURNRIGHT);
-                }
-
-            } else {
-                brake();
+           if (gamepad2.left_bumper) {
+                flMotor.setPower(frontLeftPower*0.35);
+                blMotor.setPower(backLeftPower*0.35);
+                frMotor.setPower(frontRightPower*0.35);
+                brMotor.setPower(backRightPower*0.35);
             }
+            else {
+               flMotor.setPower(frontLeftPower);
+               blMotor.setPower(backLeftPower);
+               frMotor.setPower(frontRightPower);
+               brMotor.setPower(backRightPower);
+            }
+
+            //
+//            if (gamepad2.left_stick_x < 0 || gamepad2.left_stick_x > 0 ||
+//                    gamepad2.left_stick_y < 0 || gamepad2.left_stick_y > 0 ||
+//                    gamepad2.right_stick_x>0 || gamepad2.right_stick_x<0) {
+//
+//// turret
+//                telemetry.addData("working", "yes");
+//                // if (turret.getCurrentPosition()>= 650){
+//                //         turret.setPower(0.0);
+//                // }
+//                // else if(turret.getCurrentPosition()<=-720){
+//                //         turret.setPower(0.0);
+//                // }
+//
+//                // base
+//
+//                if (gamepad2.left_stick_x < 0) {
+//                    strafe(StrafeDirection.LEFT);
+//                }
+//
+//                if (gamepad2.left_stick_x > 0) {
+//                    strafe(StrafeDirection.RIGHT);
+//                }
+//
+//                if (gamepad2.left_stick_y > 0) {
+//                    strafe(StrafeDirection.BACKWARD);
+//                }
+//
+//                if (gamepad2.left_stick_y < 0) {
+//                    strafe(StrafeDirection.FORWARD);
+//                }
+//
+//                if (gamepad2.right_stick_x<0) {
+//                    strafe(StrafeDirection.TURNLEFT);
+//                }
+//
+//                if (gamepad2.right_stick_x>0) {
+//                    strafe(StrafeDirection.TURNRIGHT);
+//                }
+//
+//            } else {
+//                brake();
+//            }
 
 // gripper
-            if (gamepad2.left_trigger>0) {
-                increaseSpeed();
-            }
+//            if (gamepad2.left_trigger>0) {
+//                increaseSpeed();
+//            }
+////
 //
-
-            if (gamepad2.left_bumper) {
-                reduceSpeed();
-            }
+//            if (gamepad2.left_bumper) {
+//                reduceSpeed();
+//            }
             if (gamepad2.a) {
                 arm.setVelocity(4000);
-                arm.setTargetPosition(arm.getCurrentPosition() + 100);
+                arm.setTargetPosition(arm.getCurrentPosition() + 200);
                 arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 // arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
             }
             else if (gamepad2.b) {
                 arm.setVelocity(4000);
-                arm.setTargetPosition(arm.getCurrentPosition() - 100);
+                arm.setTargetPosition(arm.getCurrentPosition() - 200);
                 arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 // arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
 
@@ -259,7 +295,7 @@ public class RC_Base extends LinearOpMode {
 ////flywheeel
 
             if (gamepad2.options) {
-                fly.setPower(1.0);
+                fly.setPower(4.0);
             } else {
                 fly.setPower(0);
             }
@@ -315,7 +351,7 @@ public class RC_Base extends LinearOpMode {
                 arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                 sleep(500);
                 arm.setTargetPosition(0);
-                wrist.setPosition(.51888888888889);
+                wrist.setPosition(.48);
                 sleep(500);
                 arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 

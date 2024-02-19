@@ -219,19 +219,7 @@ public class RC_Firewalls extends LinearOpMode {
             if (gamepad1.left_bumper) {
                 reduceSpeed();
             }
-            if (gamepad2.right_bumper) {
-                lift.setPower(1);
-                // arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
-            }
-            else if (gamepad2.left_bumper) {
-                lift.setPower(-1);
-                // arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
 
-            }
-            else {
-                lift.setPower(0);
-
-            }
             if (gamepad1.right_bumper) {
                 increaseSpeed();
             }

@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorTouch;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -55,9 +56,9 @@ public class AutoBlueBoard extends LinearOpMode {
     private Servo wrist = null;
     private Servo guard = null;
     private DcMotorEx arm =null;
+
     @Override
     public void runOpMode() throws InterruptedException {
-        RobotBaseMovementService base = new RobotBaseMovementService();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam  "), cameraMonitorViewId);
         webcam.setPipeline(new AutoBlueBoard.samplePipeline());
@@ -100,6 +101,7 @@ public class AutoBlueBoard extends LinearOpMode {
         guard = hardwareMap.get(Servo.class, "wrist2");
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
         int count=0;
          /*
           Initialize the hardware variables. Note that the strings used here as parameters
@@ -122,6 +124,7 @@ public class AutoBlueBoard extends LinearOpMode {
 //        flMotor.setPower(.3);
 //        brMotor.setPower(.3);
 //        blMotor.setPower(.3);
+        wrist.setPosition(.488);
 
         drop.setPosition(.01);
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
@@ -163,28 +166,25 @@ public class AutoBlueBoard extends LinearOpMode {
                 sleep(1000);
                 if(Left){
                     encoderDrive(FORWARD,DRIVE_SPEED,25,25,500);
-                    sleep(500);
                     encoderDrive(LEFTSLIDE,DRIVE_SPEED,6,6,500);
                     sleep(500);
                     drop.setPosition(.4);
                     sleep(800);
                     encoderDrive(LEFTSLIDE,DRIVE_SPEED,26,26,500);
-                    sleep(2000);
                     encoderDrive(LEFT,DRIVE_SPEED,24,24,500);
-                    sleep(2000);
                     encoderDrive(RIGHTSLIDE,DRIVE_SPEED,7,7,500);
-                    sleep(2000);
+                    sleep(500);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1500);
+                    arm.setTargetPosition(-1300);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1501);
+                    arm.setTargetPosition(-1301);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
+                    sleep(500);
                     wrist.setPosition(.878333333334);
-                    sleep(2000);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
-                    sleep(2000);
+                    sleep(500);
+                    encoderDrive(BACKWARD,DRIVE_SPEED,13,13,500);
+                    sleep(500);
                     guard.setPosition(.2);
                     sleep(1000);
                     arm.setVelocity(3000);
@@ -193,18 +193,20 @@ public class AutoBlueBoard extends LinearOpMode {
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-1901);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
-                    encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
-                    sleep(2000);
-                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,34,34,500);
+                    sleep(500);
+                    encoderDrive(FORWARD,DRIVE_SPEED,5,5,500);
+                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,37,37,500);
+                    sleep(500);
+                    wrist.setPosition(.488);
+                    sleep(500);
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-20);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-21);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(3000);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
+                    sleep(1500);
+                    encoderDrive(BACKWARD,DRIVE_SPEED,13.5,13.5,500);
 //                    sleep(1500);
 //                    sleep(2000);
 //                    base.turnLeft(1900,.3);
@@ -223,28 +225,25 @@ public class AutoBlueBoard extends LinearOpMode {
                 }
                 else if(Right){
                     encoderDrive(FORWARD,DRIVE_SPEED,25,25,500);
-                    sleep(500);
                     encoderDrive(RIGHTSLIDE,DRIVE_SPEED,18,18,500);
                     sleep(800);
                     drop.setPosition(.45);
                     sleep(800);
                     encoderDrive(LEFTSLIDE,DRIVE_SPEED,48,48,500);
-                    sleep(2000);
                     encoderDrive(LEFT,DRIVE_SPEED,24,24,500);
-                    sleep(2000);
-                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,8,8,500);
-                    sleep(2000);
+                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,9.5,9.5,500);
+                    sleep(500);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1500);
+                    arm.setTargetPosition(-1300);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1501);
+                    arm.setTargetPosition(-1301);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
+                    sleep(500);
                     wrist.setPosition(.878333333334);
-                    sleep(2000);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,13,13,500);
-                    sleep(2000);
+                    sleep(500);
+                    encoderDrive(BACKWARD,DRIVE_SPEED,14.5,14.5,500);
+                    sleep(500);
                     guard.setPosition(.2);
                     sleep(1000);
                     arm.setVelocity(3000);
@@ -253,18 +252,20 @@ public class AutoBlueBoard extends LinearOpMode {
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-1901);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
-                    encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
-                    sleep(2000);
+                    sleep(500);
+                    encoderDrive(FORWARD,DRIVE_SPEED,5,5,500);
                     encoderDrive(LEFTSLIDE,DRIVE_SPEED,20,20,500);
+                    sleep(500);
+                    wrist.setPosition(.488);
+                    sleep(500);
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-20);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-21);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(3000);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
+                    sleep(1500);
+                    encoderDrive(BACKWARD,DRIVE_SPEED,13,13,500);
 //                    sleep(1500);
 //                    base.driveLeft(300,.3);
 //                    sleep(1200);
@@ -279,25 +280,24 @@ public class AutoBlueBoard extends LinearOpMode {
 //                    base.guard.setPosition(1);
                 }
                 else if(Center){
-                    encoderDrive(FORWARD,DRIVE_SPEED,25,25,500);
-                    sleep(3000);
+                    encoderDrive(FORWARD,DRIVE_SPEED,26,26,500);
+                    sleep(800);
                     drop.setPosition(.4);
                     sleep(1000);
                     encoderDrive(LEFTSLIDE,DRIVE_SPEED,39,39,500);
-                    sleep(2000);
                     encoderDrive(LEFT,DRIVE_SPEED,24,24,500);
-                    sleep(2000);
+                    sleep(500);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1500);
+                    arm.setTargetPosition(-1300);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1501);
+                    arm.setTargetPosition(-1301);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
+                    sleep(500);
                     wrist.setPosition(.878333333334);
-                    sleep(2000);
+                    sleep(500);
                     encoderDrive(BACKWARD,DRIVE_SPEED,7,7,500);
-                    sleep(2000);
+                    sleep(500);
                     guard.setPosition(.2);
                     sleep(1000);
                     arm.setVelocity(3000);
@@ -306,17 +306,19 @@ public class AutoBlueBoard extends LinearOpMode {
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-1901);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(2000);
-                    encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
-                    sleep(2000);
+                    sleep(500);
+                    encoderDrive(FORWARD,DRIVE_SPEED,5,5,500);
                     encoderDrive(LEFTSLIDE,DRIVE_SPEED,27,27,500);
+                    sleep(500);
+                    wrist.setPosition(.488);
+                    sleep(500);
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-20);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-21);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(3000);
+                    sleep(1500);
                     encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
 //                    sleep(1500);
 
@@ -615,7 +617,7 @@ public class AutoBlueBoard extends LinearOpMode {
             flMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             frMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            //  sleep(250);   // optional pause after each move
+              sleep(250);   // optional pause after each move
         }
     }
 
