@@ -3,29 +3,45 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 
-@TeleOp(name = "RC_Base", group = "Linear Opmode")
-public class RC_Base extends LinearOpMode {
+public class Functions extends LinearOpMode  {
 
 
     // NEVER CHANGE SPEED
     private static final float sensitivity = .6f;
 //    Func functions = new Func();
+void setPOS1(){
+    guard.setPosition(.6);
+    arm.setVelocity(4000);
+    arm.setTargetPosition(-2614);
+    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+    sleep(1500);
+    wrist.setPosition(.79);}
+    void setPos2(){
 
+
+        arm.setVelocity(4000);
+        arm.setTargetPosition(-1906);
+        arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        sleep(500);
+        arm.setTargetPosition(0);
+        wrist.setPosition(.46);
+        sleep(500);
+        arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
+
+    }
     void oneDrop(){
         guard.setPosition(.4);
-        sleep(160);
+        sleep(200);
         guard.setPosition(.7);
     }
+
+
 
 
     enum StrafeDirection {
@@ -80,8 +96,7 @@ public class RC_Base extends LinearOpMode {
     public Servo wrist = null;
     public Servo guard = null;
     public Servo stack = null;
-    private CRServo servoo = null;
-    private VoltageSensor voltage;
+//    public   Func function = new Func();
 
 
     // Declare OpMode members.
@@ -146,7 +161,8 @@ public class RC_Base extends LinearOpMode {
         telemetry.update();
 
 
-
+        waitForStart();
+        runtime.reset();
 
         frMotor = hardwareMap.get(DcMotorEx.class, "fr");
         flMotor = hardwareMap.get(DcMotorEx.class, "fl");
@@ -160,11 +176,8 @@ public class RC_Base extends LinearOpMode {
         wrist = hardwareMap.get(Servo.class, "wrist");
         guard = hardwareMap.get(Servo.class, "wrist2");
         stack = hardwareMap.get(Servo.class, "stack");
-        voltage = hardwareMap.voltageSensor.iterator().next();
-
-        stack.setPosition(.9);
 //        servoo = hardwareMap.get(CRServo.class, "servoo");
-        wrist.setPosition(.48);
+        wrist.setPosition(.46);
         frMotor.setDirection(DcMotorEx.Direction.FORWARD);
         brMotor.setDirection(DcMotorEx.Direction.FORWARD);
         flMotor.setDirection(DcMotorEx.Direction.REVERSE);
@@ -190,8 +203,6 @@ public class RC_Base extends LinearOpMode {
         double SlideMax2 = 1.0;
         double SlideIncrement2 = 0.005;
 // slide
-        waitForStart();
-        runtime.reset();
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             double y = -gamepad2.left_stick_y; // Remember, Y stick value is reversed
@@ -308,7 +319,7 @@ public class RC_Base extends LinearOpMode {
 ////flywheeel
 
             if (gamepad2.options) {
-                fly.setPower(4.0 * (12.0 / voltage.getVoltage()));
+                fly.setPower(4.0);
             } else {
                 fly.setPower(0);
             }
@@ -333,7 +344,7 @@ public class RC_Base extends LinearOpMode {
                 lift.setPower(0);
 
             }
-            if (gamepad2.left_stick_button){
+            if (gamepad1.x){
                 oneDrop();
             }
 //            if (gamepad2.left_stick_y>0){
@@ -352,28 +363,34 @@ public class RC_Base extends LinearOpMode {
 //            else {
 //                guard.setPosition(0);
 //            }
-
-            if(gamepad2.y){
-                guard.setPosition(.7);
-                arm.setVelocity(4000);
-                arm.setTargetPosition(-2614);
-                arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                sleep(1500);
-                wrist.setPosition(.79);
+            if (gamepad2.y){
+                setPOS1();
             }
-            if(gamepad2.guide){
-                wrist.setPosition(.48);
-                arm.setVelocity(3000);
-                arm.setVelocity(4000);
-                arm.setTargetPosition(-1906);
-                arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                sleep(500);
-                arm.setTargetPosition(0);
-
-                sleep(500);
-                arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
+            else if (gamepad2.guide) {
+                setPos2();
             }
+//            if(gamepad2.y){
+//                guard.setPosition(.6);
+//                arm.setVelocity(4000);
+//                arm.setTargetPosition(-2614);
+//                arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+////                sleep(1500);
+//                if(arm.getCurrentPosition()<-2000){
+//                wrist.setPosition(.79);}
+//            }
+//            if(gamepad2.guide){
+//                arm.setVelocity(3000);
+//                arm.setVelocity(4000);
+//                arm.setTargetPosition(-1906);
+//                arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+//
+//                if(arm.getCurrentPosition()>-2000)
+//                    arm.setTargetPosition(0);
+//                    wrist.setPosition(.5);
+////                    sleep(500);
+//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+//
+//            }
 
 
 

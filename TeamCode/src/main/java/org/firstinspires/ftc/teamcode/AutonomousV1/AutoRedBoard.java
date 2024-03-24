@@ -1,8 +1,9 @@
 
 
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.AutonomousV1;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -34,9 +35,10 @@ import org.openftc.easyopencv.OpenCvWebcam;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-@Autonomous(name="ZAutoRedBoard", group="Linear OpMode")
+@Autonomous(name="AutoRedBoard", group="Linear OpMode")
+@Disabled
 
-public class ZAutoRedBoard extends LinearOpMode {
+public class AutoRedBoard extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -53,12 +55,14 @@ public class ZAutoRedBoard extends LinearOpMode {
     private Servo wrist = null;
     private Servo guard = null;
     private DcMotorEx arm =null;
+
+
+
     @Override
     public void runOpMode() throws InterruptedException {
-        RobotBaseMovementService base = new RobotBaseMovementService();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam  "), cameraMonitorViewId);
-        webcam.setPipeline(new ZAutoRedBoard.samplePipeline());
+        webcam.setPipeline(new AutoRedBoard.samplePipeline());
         webcam.setMillisecondsPermissionTimeout(5000); // Timeout for obtaining permission is configurable. Set before opening.
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -96,7 +100,10 @@ public class ZAutoRedBoard extends LinearOpMode {
         arm =hardwareMap.get(DcMotorEx.class, "arm");
         wrist = hardwareMap.get(Servo.class, "wrist");
         guard = hardwareMap.get(Servo.class, "wrist2");
+
         telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
         telemetry.update();
         int count=0;
          /*
@@ -120,10 +127,10 @@ public class ZAutoRedBoard extends LinearOpMode {
 //        flMotor.setPower(.3);
 //        brMotor.setPower(.3);
 //        blMotor.setPower(.3);
-
         wrist.setPosition(.488);
-        drop.setPosition(.01);        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
-        // Pushing the left stick forward MUST make robot go forward. So adjust these two lines based on your first test drive.
+        drop.setPosition(.01);
+        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
+        // Pushing the left sti ck forward MUST make robot go forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
 
         // Wait for the game to start (driver presses PLAY)
@@ -192,9 +199,9 @@ public class ZAutoRedBoard extends LinearOpMode {
                     arm.setTargetPosition(-1901);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     sleep(500);
-                    encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
+                    encoderDrive(FORWARD,DRIVE_SPEED,5,5,500);
                     sleep(500);
-                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,34,34,500);
+                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,20,20,500);
                     wrist.setPosition(.488);
                     sleep(500);
                     arm.setVelocity(3000);
@@ -219,8 +226,6 @@ public class ZAutoRedBoard extends LinearOpMode {
 //                    base.wrist.setPosition(1);
 //                    sleep(2000);
 //                    base.guard.setPosition(1);
-
-
 
                 }
                 else if(Right){
@@ -256,9 +261,10 @@ public class ZAutoRedBoard extends LinearOpMode {
                     arm.setTargetPosition(-1901);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     sleep(2000);
-                    encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
-                    sleep(2000);
-                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,24,24,500);
+                    encoderDrive(FORWARD,DRIVE_SPEED,5,5,500);
+                    sleep(500);
+                    encoderDrive(RIGHTSLIDE, DRIVE_SPEED, 38, 38, 500);
+
                     wrist.setPosition(.488);
                     sleep(500);
                     arm.setVelocity(3000);
@@ -311,9 +317,10 @@ public class ZAutoRedBoard extends LinearOpMode {
                     arm.setTargetPosition(-1901);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     sleep(1000);
-                    encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
+                    encoderDrive(FORWARD,DRIVE_SPEED,5,5,500);
                     sleep(500);
-                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,27,27,500);
+                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,27,27,500);
+
                     wrist.setPosition(.488);
                     sleep(500);
                     arm.setVelocity(3000);
@@ -372,9 +379,9 @@ public class ZAutoRedBoard extends LinearOpMode {
             Imgproc.cvtColor(input, YCbCr, Imgproc.COLOR_RGB2YCrCb);
             telemetry.addLine("pipeline running╰(*°▽°*)╯╰(*°▽°*)╯");
             telemetry.update();
-            Rect leftrect = new Rect(5, 185, 10, 10);
-            Rect centerrect = new Rect(315, 140, 10, 10);
-            Rect rightrect = new Rect(627, 185, 10, 10);
+            Rect leftrect = new Rect(5, 200, 10, 10);
+            Rect centerrect = new Rect(315, 170, 10, 10);
+            Rect rightrect = new Rect(610, 210, 10, 10);
 
             input.copyTo(output);
             Imgproc.rectangle(output, leftrect, rectColor, 2);
@@ -405,6 +412,8 @@ public class ZAutoRedBoard extends LinearOpMode {
                 Left=true;
                 Right=false;
                 Center=false;
+
+
                 telemetry.update();
             }
             else if (leftavgfin > rightavgfin&& rightavgfin<centeravgfin) {
@@ -412,6 +421,8 @@ public class ZAutoRedBoard extends LinearOpMode {
                 Left=false;
                 Right=true;
                 Center=false;
+
+
                 telemetry.update();
             }
             else if (leftavgfin > centeravgfin && rightavgfin>centeravgfin) {
@@ -419,6 +430,8 @@ public class ZAutoRedBoard extends LinearOpMode {
                 Left=false;
                 Right=false;
                 Center=true;
+
+
                 telemetry.update();            }
 
             return (output);
@@ -621,7 +634,7 @@ public class ZAutoRedBoard extends LinearOpMode {
             flMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             frMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            //  sleep(250);   // optional pause after each move
+//              sleep(500);   // optional pause after each move
         }
     }
 

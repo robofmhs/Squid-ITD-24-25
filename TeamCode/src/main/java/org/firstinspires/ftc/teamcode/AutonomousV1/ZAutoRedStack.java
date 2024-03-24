@@ -1,6 +1,6 @@
 
 
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode.AutonomousV1;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -34,9 +34,9 @@ import org.openftc.easyopencv.OpenCvWebcam;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-@Autonomous(name="ZAutoBlueStack", group="Linear OpMode")
+@Autonomous(name="ZAutoRedStack", group="Linear OpMode")
 
-public class ZAutoBlueStack extends LinearOpMode {
+public class ZAutoRedStack extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -58,7 +58,7 @@ public class ZAutoBlueStack extends LinearOpMode {
         RobotBaseMovementService base = new RobotBaseMovementService();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam  "), cameraMonitorViewId);
-        webcam.setPipeline(new ZAutoBlueStack.samplePipeline());
+        webcam.setPipeline(new ZAutoRedStack.samplePipeline());
         webcam.setMillisecondsPermissionTimeout(5000); // Timeout for obtaining permission is configurable. Set before opening.
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {
@@ -162,33 +162,30 @@ public class ZAutoBlueStack extends LinearOpMode {
                 if(Left){
                     encoderDrive(FORWARD,DRIVE_SPEED,25,25,500);
                     sleep(500);
-                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,7,7,500);
+                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,6,6,500);
+                    sleep(500);
+                    drop.setPosition(.4);
                     sleep(800);
-                    drop.setPosition(.5);
-                    sleep(800);
-                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,7,7,500);
+                    drop.setPosition(.1);
+                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,100,100,500);
                     sleep(500);
-                    encoderDrive(FORWARD,DRIVE_SPEED,25,25,500);
+                    encoderDrive(RIGHT,DRIVE_SPEED,24,24,500);
                     sleep(500);
-                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,90,90,500);
-                    sleep(500);
-                    encoderDrive(LEFT,DRIVE_SPEED,23,23,500);
-                    sleep(500);
-                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,30,30,500);
+                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,6,6,500);
                     sleep(1000);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1300);
+                    arm.setTargetPosition(-1400);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1301);
+                    arm.setTargetPosition(-1401);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     sleep(1000);
                     wrist.setPosition(.878333333334);
                     sleep(500);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
+                    encoderDrive(BACKWARD,DRIVE_SPEED,8,8,500);
                     sleep(500);
                     guard.setPosition(.2);
-                    sleep(1000);
+                    sleep(500);
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-1900);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
@@ -198,14 +195,14 @@ public class ZAutoBlueStack extends LinearOpMode {
                     sleep(500);
                     encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
                     sleep(500);
-                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,20,20,500);
+                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,34,34,500);
                     wrist.setPosition(.488);
                     sleep(500);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-20);
+                    arm.setTargetPosition(-100);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-21);
+                    arm.setTargetPosition(-101);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     sleep(1500);
                     encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
@@ -226,35 +223,37 @@ public class ZAutoBlueStack extends LinearOpMode {
 
                 }
                 else if(Right){
-
-
-
-                    encoderDrive(FORWARD,DRIVE_SPEED,25.5,25.5,500);
+                    encoderDrive(FORWARD,DRIVE_SPEED,25,25,500);
                     sleep(500);
                     encoderDrive(RIGHTSLIDE,DRIVE_SPEED,18,18,500);
-                    sleep(500);
-                    drop.setPosition(.4);
                     sleep(800);
-                    drop.setPosition(.1);
-                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,112,112,500);
+                    drop.setPosition(.5);
+                    sleep(800);
+                    encoderDrive(BACKWARD,DRIVE_SPEED,2,2,500);
                     sleep(500);
-                    encoderDrive(LEFT,DRIVE_SPEED,24,24,500);
+                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,18,18,500);
                     sleep(500);
-                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,8,8,500);
+                    encoderDrive(FORWARD,DRIVE_SPEED,27,27,500);
                     sleep(500);
+                    encoderDrive(RIGHTSLIDE,.7,90,90,500);
+                    sleep(500);
+                    encoderDrive(RIGHT,DRIVE_SPEED,23,23,500);
+                    sleep(500);
+                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,27,27,500);
+                    sleep(1000);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1400);
+                    arm.setTargetPosition(-1300);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1401);
+                    arm.setTargetPosition(-1301);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     sleep(1000);
                     wrist.setPosition(.878333333334);
-                    sleep(500);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,8,8,500);
-                    sleep(500);
-                    guard.setPosition(.2);
                     sleep(1000);
+                    encoderDrive(BACKWARD,DRIVE_SPEED,13,13,500);
+                    sleep(1000);
+                    guard.setPosition(.2);
+                    sleep(500);
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-1900);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
@@ -264,17 +263,20 @@ public class ZAutoBlueStack extends LinearOpMode {
                     sleep(500);
                     encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
                     sleep(500);
-                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,34,34,500);
+                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,20,20,500);
                     wrist.setPosition(.488);
                     sleep(500);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-20);
+                    arm.setTargetPosition(-100);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-21);
+                    arm.setTargetPosition(-101);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     sleep(1500);
                     encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
+
+
+
 
 
 //                    encoderDrive(RIGHT,DRIVE_SPEED,24,24,500);
@@ -327,25 +329,23 @@ public class ZAutoBlueStack extends LinearOpMode {
                 }
                 else if(Center){
                     encoderDrive(FORWARD,DRIVE_SPEED,27,27,500);
-                    sleep(3000);
+                    sleep(500);
                     drop.setPosition(.4);
                     sleep(500);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,2,2,500);
+                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,39,39,500);
                     sleep(500);
-                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,90,90,500);
-                    sleep(500);
-                    encoderDrive(LEFT,DRIVE_SPEED,25,25,500);
+                    encoderDrive(RIGHT,DRIVE_SPEED,24,24,500);
                     sleep(500);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1450);
+                    arm.setTargetPosition(-1500);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-1451);
+                    arm.setTargetPosition(-1501);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(1000);
+                    sleep(500);
                     wrist.setPosition(.878333333334);
                     sleep(500);
-                    encoderDrive(BACKWARD,DRIVE_SPEED,8,8,500);
+                    encoderDrive(BACKWARD,DRIVE_SPEED,9,9,500);
                     sleep(500);
                     guard.setPosition(.2);
                     sleep(1000);
@@ -355,57 +355,20 @@ public class ZAutoBlueStack extends LinearOpMode {
                     arm.setVelocity(3000);
                     arm.setTargetPosition(-1901);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-                    sleep(500);
+                    sleep(1000);
                     encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
                     sleep(500);
-                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,27,27,500);
+                    encoderDrive(LEFTSLIDE,DRIVE_SPEED,27,27,500);
                     wrist.setPosition(.488);
                     sleep(500);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-20);
+                    arm.setTargetPosition(-500);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     arm.setVelocity(3000);
-                    arm.setTargetPosition(-21);
+                    arm.setTargetPosition(-501);
                     arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
                     sleep(1500);
                     encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
-                    sleep(1500);
-
-
-//                    sleep(2000);
-//                    encoderDrive(RIGHT,DRIVE_SPEED,24,24,500);
-//                    sleep(2000);
-//                    arm.setVelocity(3000);
-//                    arm.setTargetPosition(-1500);
-//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-//                    arm.setVelocity(3000);
-//                    arm.setTargetPosition(-1501);
-//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-//                    sleep(2000);
-//                    wrist.setPosition(.878333333334);
-//                    sleep(2000);
-//                    encoderDrive(BACKWARD,DRIVE_SPEED,7,7,500);
-//                    sleep(2000);
-//                    guard.setPosition(.2);
-//                    sleep(1000);
-//                    arm.setVelocity(3000);
-//                    arm.setTargetPosition(-1900);
-//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-//                    arm.setVelocity(3000);
-//                    arm.setTargetPosition(-1901);
-//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-//                    sleep(2000);
-//                    encoderDrive(FORWARD,DRIVE_SPEED,3,3,500);
-//                    sleep(2000);
-//                    encoderDrive(RIGHTSLIDE,DRIVE_SPEED,27,27,500);
-//                    arm.setVelocity(3000);
-//                    arm.setTargetPosition(-20);
-//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-//                    arm.setVelocity(3000);
-//                    arm.setTargetPosition(-21);
-//                    arm.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-//                    sleep(3000);
-//                    encoderDrive(BACKWARD,DRIVE_SPEED,11,11,500);
 //                    sleep(1500);
 
 
@@ -467,9 +430,9 @@ public class ZAutoBlueStack extends LinearOpMode {
             centerCrop = YCbCr.submat(centerrect);
             rightCrop = YCbCr.submat(rightrect);
 
-            Core.extractChannel(leftCrop, leftCrop, 0);
-            Core.extractChannel(centerCrop, centerCrop, 0);
-            Core.extractChannel(rightCrop, rightCrop, 0);
+            Core.extractChannel(leftCrop, leftCrop, 2);
+            Core.extractChannel(centerCrop, centerCrop, 2);
+            Core.extractChannel(rightCrop, rightCrop, 2);
 
             Scalar leftavg = Core.mean(leftCrop);
             Scalar centeravg = Core.mean(centerCrop);
