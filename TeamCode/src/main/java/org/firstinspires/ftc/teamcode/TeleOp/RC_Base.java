@@ -6,11 +6,14 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.arcrobotics.ftclib.util.InterpLUT;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 
 @Config
@@ -20,12 +23,26 @@ public class RC_Base extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private PIDController controller;
+    //arm stuff
+    private PIDController armController;
 
-    public static double p = 0.03,i = 0,d =0.0008;
-    public static double f = 0.0001;
-    public static int target = 0;
-    public static int increment = 1;
+    public static double armKp = 0.015, armKi = 0.0005, armKd =0.0008;
+    public static double armIncrement = 20, slideIncrement=10;
+    public static double armKf = 0.0001;
+    public static int armTarget = 0;
+    public DcMotorEx arm;
+    private final double armTicks_in_degree = 5281.1/360;
+    private double armAngle;
+
+    //slide stuff
+    private PIDController slideController;
+
+    public static double slideKp = 0.02, slideKi = 0.00087, slideKd =0.00075;
+    public static double slideKf = 0.0008;
+    public static int slideTarget = 0;
+    public DcMotorEx slide;
+    private final double slideTicks_in_degree = 537.7/360;
+
     public static double gOpen = .3;
     public static double gClose = .8;
     public static double wristPos = .8;
@@ -37,50 +54,55 @@ public class RC_Base extends LinearOpMode {
     private DcMotorEx frMotor ;
     private DcMotorEx blMotor;
     private DcMotorEx brMotor ;
-    private DcMotorEx drone ;
-    private DcMotorEx arm;
+
     private Servo Gripper;
 
     private Servo Wrist;
+
+
     public void gripper(Servo servo1, double pos1,double pos2){
         if (servo1.getPosition() >= pos1 && servo1.getPosition() < pos1+.01) {
             servo1.setPosition(pos2);
 
         } else if (servo1.getPosition() >= pos2) {
             servo1.setPosition(pos1);
-
         } else {
             servo1.setPosition(pos2);
         }
     }
-    public void ExternalArm(int target,DcMotorEx arm){
-        controller.setPID(p,i,d);
-        int armPos = arm.getCurrentPosition();
-        double pid = controller.calculate(armPos, target);
-//        double ff = Math.cos(Math.toRadians(armTarget/ticks_in_degree)*armKf);
-        double ff = Math.sin(Math.toRadians(armPos/ticks_in_degree+30)*f);
-        double power = pid +ff;
-        arm.setPower(power);
-    }
+    InterpLUT lut = new InterpLUT();
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        controller = new PIDController(p, i, d);
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
         flMotor= hardwareMap.get(DcMotorEx.class,"fl");
         frMotor= hardwareMap.get(DcMotorEx.class,"fr");
         blMotor= hardwareMap.get(DcMotorEx.class,"bl");
         brMotor= hardwareMap.get(DcMotorEx.class,"br");
-        drone= hardwareMap.get(DcMotorEx.class,"drone");
-        arm= hardwareMap.get(DcMotorEx.class,"arm"); // is port 0 on expansion
         Gripper = hardwareMap.get(Servo.class,"gl"); // is port 2 in expansion
         Wrist= hardwareMap.get(Servo.class,"wrist"); // is port 0 in expansion
 
         Wrist.setPosition(1.0);
         frMotor.setDirection(DcMotorEx.Direction.REVERSE);
         brMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        arm.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        arm = hardwareMap.get(DcMotorEx.class, "arm");
+        arm.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        slide = hardwareMap.get(DcMotorEx.class, "slide");
+        slide.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        slide.setDirection(DcMotorSimple.Direction.REVERSE);
+        armController = new PIDController(armKp, armKi, armKd);
+        slideController = new PIDController(slideKp, slideKi, slideKd);
+        //lut has slide ticks as input, has output as armKf
+        lut.add(0, 0.038);
+        lut.add(500, .093);
+        lut.add(1000, .13);
+        lut.add(1500, .14);
+        lut.add(2000, 0.163);
+        lut.add(2100, 0.163);
+        lut.createLUT();
         // Wait for the game to start (driver presses START)
         waitForStart();
         runtime.reset();
@@ -119,50 +141,42 @@ public class RC_Base extends LinearOpMode {
                 gripper(Gripper,gOpen,gClose);
                 while (gamepad1.a){}
             }
+            double armtrigToJoy = gamepad2.left_trigger-gamepad2.right_trigger;
+            armTarget = (int) (armTarget+armIncrement*armtrigToJoy);
+//            double slidetrigToJoy = gamepad1.left_trigger-gamepad1.right_trigger;
+            slideTarget = (int) (slideTarget+slideIncrement*gamepad2.left_stick_y);
 
-            if (gamepad1.left_trigger>0 && gamepad1.left_bumper) {
-                target+=increment;
-                ExternalArm(target,arm);
-            }
-            else if (gamepad1.right_trigger>0 && gamepad1.left_bumper) {
-                target-=increment;
-                ExternalArm(target,arm);             }
-            else if(gamepad1.left_trigger>0){
-                target+=2*increment;
-                ExternalArm(target,arm);            }
-            else if (gamepad1.right_trigger>0) {
-                target-=2*increment;
-                ExternalArm(target,arm);           }
-            else{
-                ExternalArm(target,arm);
-            }
-
-            Wrist.setPosition(wristPos);
-
-            if(gamepad1.dpad_up){
-                wristPos=Wrist.getPosition()+.001;
-                Wrist.setPosition(wristPos);
-            }
-            else if(gamepad1.dpad_down){
-                wristPos=Wrist.getPosition()-.001;
-                Wrist.setPosition(wristPos);
-            } else {
-                wristPos=Wrist.getPosition();
-                Wrist.setPosition(wristPos);
-            }
-
-            controller.setPID(p,i,d);
+            int slidePos = Range.clip(slide.getCurrentPosition(),1,2000);
+            slideTarget= Range.clip(slideTarget,1,2000);
+            armController.setPID(armKp, armKi, armKd);
             int armPos = arm.getCurrentPosition();
-            double pid = controller.calculate(armPos, target);
-//        double ff = Math.cos(Math.toRadians(armTarget/ticks_in_degree)*armKf);
-            double ff = Math.sin(Math.toRadians(armPos/ticks_in_degree+30)*f);
-            double power = pid +ff;
-//            arm.setPower(power);
+            double armPid = armController.calculate(armPos, armTarget);
+            armAngle= armPos/armTicks_in_degree-85;
+            armKf=lut.get(slidePos);
+            double armff = Math.cos(Math.toRadians(armAngle))*armKf;
+//        double ff = Math.sin(Math.toRadians(armPos/armTicks_in_degree+5)*armKf);
+            double armPower = armPid + armff;
+            arm.setPower(armPower);
 
+//        slide.setPower(.5);
+//        slide.setTargetPosition(slideTarget);
+//        slide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
-            telemetry.addData("pos: ", armPos);
-            telemetry.addData("armTarget: ", target);
-            telemetry.addData("power: ", power);
+            slideController.setPID(slideKp, slideKi, slideKd);
+            double slidePid = slideController.calculate(slidePos, slideTarget);
+//        armAngle= armTarget/armTicks_in_degree-85;
+//      double ff = Math.cos(Math.toRadians(armAngle)* armKf);
+            double slideff = Math.sin(armAngle*slideKf);
+            double slidePower = slidePid + slideff;
+            slide.setPower(slidePower);
+
+            telemetry.addData("armPos",armPos);
+            telemetry.addData("armTarget",armTarget);
+            telemetry.addData("armff",armff);
+            telemetry.addData("armPid",armPid);
+            telemetry.addData("armPower",arm.getPower());
+            telemetry.addData("slidePos",slidePos);
+            telemetry.addData("slideTarget",slideTarget);
             telemetry.addData("Status", "Run Time: " + runtime.toString());
 //            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.addData("Gripper: ",  Gripper.getPosition());
