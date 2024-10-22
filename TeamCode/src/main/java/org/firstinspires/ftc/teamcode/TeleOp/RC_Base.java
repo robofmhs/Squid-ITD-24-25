@@ -26,8 +26,8 @@ public class RC_Base extends LinearOpMode {
     //arm stuff
     private PIDController armController;
 
-    public static double armKp = 0.015, armKi = 0.0005, armKd =0.0008;
-    public static double armIncrement = 20, slideIncrement=10;
+    public static double armKp = 0.015, armKi = 0.0005, armKd =0.0005;
+    public static double armIncrement = 10, slideIncrement=10;
     public static double armKf = 0.0001;
     public static int armTarget = 0;
     public DcMotorEx arm;
@@ -43,12 +43,11 @@ public class RC_Base extends LinearOpMode {
     public DcMotorEx slide;
     private final double slideTicks_in_degree = 537.7/360;
 
-    public static double gOpen = .3;
-    public static double gClose = .8;
-    public static double wristPos = .8;
+    public static double gOpen = .6;
+    public static double gClose = 1;
+//    public static double wristPos = .8;
 
     private final double ticks_in_degree = 5281.1/360;
-
 
     private DcMotorEx flMotor ;
     private DcMotorEx frMotor ;
@@ -71,6 +70,7 @@ public class RC_Base extends LinearOpMode {
         }
     }
     InterpLUT lut = new InterpLUT();
+    InterpLUT slideLimit = new InterpLUT();
 
     @Override
     public void runOpMode() {
@@ -84,7 +84,9 @@ public class RC_Base extends LinearOpMode {
         Gripper = hardwareMap.get(Servo.class,"gl"); // is port 2 in expansion
         Wrist= hardwareMap.get(Servo.class,"wrist"); // is port 0 in expansion
 
-        Wrist.setPosition(1.0);
+
+
+        Wrist.setPosition(0);
         frMotor.setDirection(DcMotorEx.Direction.REVERSE);
         brMotor.setDirection(DcMotorEx.Direction.REVERSE);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -103,6 +105,48 @@ public class RC_Base extends LinearOpMode {
         lut.add(2000, 0.163);
         lut.add(2100, 0.163);
         lut.createLUT();
+        //slideLimit input armPos, output slideLimit;
+        slideLimit.add(0,0);
+        slideLimit.add(100,0);
+        slideLimit.add(200,0);
+        slideLimit.add(300,0);
+        slideLimit.add(400,0);
+        slideLimit.add(500,0);
+        slideLimit.add(600,0);
+        slideLimit.add(700,0);
+        slideLimit.add(800,0);
+        slideLimit.add(900,0);
+        slideLimit.add(1000,0);
+        slideLimit.add(1100,0);
+        slideLimit.add(1200,0);
+        slideLimit.add(1300,0);
+        slideLimit.add(1400,0);
+        slideLimit.add(1500,0);
+        slideLimit.add(1600,0);
+        slideLimit.add(1700,0);
+        slideLimit.add(1800,0);
+        slideLimit.add(1900,0);
+        slideLimit.add(2000,0);
+        slideLimit.add(2100,0);
+        slideLimit.add(2200,0);
+        slideLimit.add(2300,0);
+        slideLimit.add(2400,0);
+        slideLimit.add(2500,0);
+        slideLimit.add(2600,0);
+        slideLimit.add(2700,0);
+        slideLimit.add(2800,0);
+        slideLimit.add(2900,0);
+        slideLimit.add(3000,0);
+        slideLimit.add(3100,0);
+        slideLimit.add(3200,0);
+        slideLimit.add(3300,0);
+        slideLimit.add(3400,0);
+        slideLimit.add(3500,0);
+        slideLimit.add(3700,0);
+        slideLimit.add(3800,0);
+        slideLimit.add(3900,0);
+        slideLimit.add(4000,0);
+        slideLimit.createLUT();
         // Wait for the game to start (driver presses START)
         waitForStart();
         runtime.reset();
@@ -134,38 +178,46 @@ public class RC_Base extends LinearOpMode {
                 frMotor.setPower(frontRightPower);
                 brMotor.setPower(backRightPower);
             }
+            double wristPos=Wrist.getPosition();
 
-
-
-            if(gamepad1.a){
-                gripper(Gripper,gOpen,gClose);
-                while (gamepad1.a){}
+            if(gamepad2.right_stick_y>0){
+                Wrist.setPosition(wristPos+.005*Math.abs(gamepad2.right_stick_y));
+            } else if (gamepad2.right_stick_y<0) {
+                Wrist.setPosition(wristPos-.005*Math.abs(gamepad2.right_stick_y));
             }
-            double armtrigToJoy = gamepad2.left_trigger-gamepad2.right_trigger;
-            armTarget = (int) (armTarget+armIncrement*armtrigToJoy);
-//            double slidetrigToJoy = gamepad1.left_trigger-gamepad1.right_trigger;
-            slideTarget = (int) (slideTarget+slideIncrement*gamepad2.left_stick_y);
+            else{
+                Wrist.setPosition(wristPos);
+            }
 
-            int slidePos = Range.clip(slide.getCurrentPosition(),1,2000);
-            slideTarget= Range.clip(slideTarget,1,2000);
-            armController.setPID(armKp, armKi, armKd);
+            if(gamepad2.a){
+                gripper(Gripper,gOpen,gClose);
+                while (gamepad2.a){}
+            }
+            double slideTrigToJoy = gamepad2.right_trigger-gamepad2.left_trigger;
+            armTarget = (int) (armTarget+armIncrement*-gamepad2.left_stick_y);
+//            double slidetrigToJoy = gamepad1.left_trigger-gamepad1.right_trigger;
+            slideTarget = (int) (slideTarget+slideIncrement*slideTrigToJoy);
+
             int armPos = arm.getCurrentPosition();
+            int slidePos = Range.clip(slide.getCurrentPosition(),1,1100);
+            slideTarget= Range.clip(slideTarget,1,1100);
+            armController.setPID(armKp, armKi, armKd);
+
+
+
             double armPid = armController.calculate(armPos, armTarget);
-            armAngle= armPos/armTicks_in_degree-85;
+
+            armAngle= armPos/armTicks_in_degree-65;
             armKf=lut.get(slidePos);
             double armff = Math.cos(Math.toRadians(armAngle))*armKf;
 //        double ff = Math.sin(Math.toRadians(armPos/armTicks_in_degree+5)*armKf);
             double armPower = armPid + armff;
             arm.setPower(armPower);
 
-//        slide.setPower(.5);
-//        slide.setTargetPosition(slideTarget);
-//        slide.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
 
             slideController.setPID(slideKp, slideKi, slideKd);
             double slidePid = slideController.calculate(slidePos, slideTarget);
-//        armAngle= armTarget/armTicks_in_degree-85;
-//      double ff = Math.cos(Math.toRadians(armAngle)* armKf);
             double slideff = Math.sin(armAngle*slideKf);
             double slidePower = slidePid + slideff;
             slide.setPower(slidePower);

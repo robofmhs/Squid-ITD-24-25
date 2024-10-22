@@ -67,6 +67,8 @@ public class PIDF_Arm extends OpMode {
         int armPos = arm.getCurrentPosition();
         double armPid = armController.calculate(armPos, armTarget);
         armAngle= armPos/armTicks_in_degree-85;
+        double rijArmgle = Math.abs(armAngle)-90;
+        double Paraslide = (2.0/3.0)-(rijArmgle/270);
         armKf=lut.get(slidePos);
         double armff = Math.cos(Math.toRadians(armAngle))*armKf;
 //        double ff = Math.sin(Math.toRadians(armPos/armTicks_in_degree+5)*armKf);
