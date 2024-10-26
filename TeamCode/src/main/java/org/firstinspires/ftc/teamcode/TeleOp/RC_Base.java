@@ -2,6 +2,8 @@
 
 package org.firstinspires.ftc.teamcode.TeleOp;
 
+import static java.util.logging.Logger.global;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -43,7 +45,7 @@ public class RC_Base extends LinearOpMode {
     public DcMotorEx slide;
     private final double slideTicks_in_degree = 537.7/360;
 
-    public static double gOpen = .6;
+    public static double gOpen = .75;
     public static double gClose = 1;
 //    public static double wristPos = .8;
 
@@ -195,12 +197,21 @@ public class RC_Base extends LinearOpMode {
             }
             double slideTrigToJoy = gamepad2.right_trigger-gamepad2.left_trigger;
             armTarget = (int) (armTarget+armIncrement*-gamepad2.left_stick_y);
+
 //            double slidetrigToJoy = gamepad1.left_trigger-gamepad1.right_trigger;
             slideTarget = (int) (slideTarget+slideIncrement*slideTrigToJoy);
 
             int armPos = arm.getCurrentPosition();
-            int slidePos = Range.clip(slide.getCurrentPosition(),1,1100);
-            slideTarget= Range.clip(slideTarget,1,1100);
+            int slidePos = slide.getCurrentPosition();
+            if(armPos>=1500) {
+                 slidePos = Range.clip(slide.getCurrentPosition(), 1, 2000);
+                slideTarget = Range.clip(slideTarget, 1, 2000);
+            }
+            else {
+                 slidePos = Range.clip(slide.getCurrentPosition(), 1, 1100);
+                slideTarget = Range.clip(slideTarget, 1, 1100);
+            }
+            armTarget= Range.clip(armTarget,0,2200);
             armController.setPID(armKp, armKi, armKd);
 
 
