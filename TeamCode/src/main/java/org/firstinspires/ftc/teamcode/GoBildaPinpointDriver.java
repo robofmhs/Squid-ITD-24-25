@@ -393,6 +393,7 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
     }
 
     /**
+     *
      * Checks the deviceID of the Odometry Computer. Should return 1.
      * @return 1 if device is functional.
      */

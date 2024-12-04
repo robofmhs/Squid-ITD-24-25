@@ -2,7 +2,6 @@
 
 package org.firstinspires.ftc.teamcode.TeleOp;
 
-import static java.util.logging.Logger.global;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -10,6 +9,7 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.util.InterpLUT;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -45,8 +45,8 @@ public class RC_Base extends LinearOpMode {
     public DcMotorEx slide;
     private final double slideTicks_in_degree = 537.7/360;
 
-    public static double gOpen = .75;
-    public static double gClose = 1;
+    public static double gOpen = 0;
+    public static double gClose = .3;
 //    public static double wristPos = .8;
 
     private final double ticks_in_degree = 5281.1/360;
@@ -56,9 +56,15 @@ public class RC_Base extends LinearOpMode {
     private DcMotorEx blMotor;
     private DcMotorEx brMotor ;
 
-    private Servo Gripper;
+    public static double driveSpeed = .7;
 
+    private Servo Gripper;
     private Servo Wrist;
+
+    private Servo IntakeGripper;
+    private Servo IntakeDiffy1;
+    private Servo IntakeDiffy2;
+
 
 
     public void gripper(Servo servo1, double pos1,double pos2){
@@ -72,25 +78,31 @@ public class RC_Base extends LinearOpMode {
         }
     }
     InterpLUT lut = new InterpLUT();
-    InterpLUT slideLimit = new InterpLUT();
-
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+
         flMotor= hardwareMap.get(DcMotorEx.class,"fl");
         frMotor= hardwareMap.get(DcMotorEx.class,"fr");
         blMotor= hardwareMap.get(DcMotorEx.class,"bl");
         brMotor= hardwareMap.get(DcMotorEx.class,"br");
-        Gripper = hardwareMap.get(Servo.class,"gl"); // is port 2 in expansion
-        Wrist= hardwareMap.get(Servo.class,"wrist"); // is port 0 in expansion
+        Gripper = hardwareMap.get(Servo.class,"gl"); // is port 2 in control
+        Wrist= hardwareMap.get(Servo.class,"wrist"); // is port 0 in control
 
 
 
         Wrist.setPosition(0);
+        Gripper.setPosition(gClose);
         frMotor.setDirection(DcMotorEx.Direction.REVERSE);
         brMotor.setDirection(DcMotorEx.Direction.REVERSE);
+//        flMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+//        frMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+//        blMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+//        brMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+
+
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         arm = hardwareMap.get(DcMotorEx.class, "arm");
         arm.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -107,54 +119,15 @@ public class RC_Base extends LinearOpMode {
         lut.add(2000, 0.163);
         lut.add(2100, 0.163);
         lut.createLUT();
-        //slideLimit input armPos, output slideLimit;
-        slideLimit.add(0,0);
-        slideLimit.add(100,0);
-        slideLimit.add(200,0);
-        slideLimit.add(300,0);
-        slideLimit.add(400,0);
-        slideLimit.add(500,0);
-        slideLimit.add(600,0);
-        slideLimit.add(700,0);
-        slideLimit.add(800,0);
-        slideLimit.add(900,0);
-        slideLimit.add(1000,0);
-        slideLimit.add(1100,0);
-        slideLimit.add(1200,0);
-        slideLimit.add(1300,0);
-        slideLimit.add(1400,0);
-        slideLimit.add(1500,0);
-        slideLimit.add(1600,0);
-        slideLimit.add(1700,0);
-        slideLimit.add(1800,0);
-        slideLimit.add(1900,0);
-        slideLimit.add(2000,0);
-        slideLimit.add(2100,0);
-        slideLimit.add(2200,0);
-        slideLimit.add(2300,0);
-        slideLimit.add(2400,0);
-        slideLimit.add(2500,0);
-        slideLimit.add(2600,0);
-        slideLimit.add(2700,0);
-        slideLimit.add(2800,0);
-        slideLimit.add(2900,0);
-        slideLimit.add(3000,0);
-        slideLimit.add(3100,0);
-        slideLimit.add(3200,0);
-        slideLimit.add(3300,0);
-        slideLimit.add(3400,0);
-        slideLimit.add(3500,0);
-        slideLimit.add(3700,0);
-        slideLimit.add(3800,0);
-        slideLimit.add(3900,0);
-        slideLimit.add(4000,0);
-        slideLimit.createLUT();
+
+
         // Wait for the game to start (driver presses START)
         waitForStart();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
             double y = gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = -gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = -gamepad1.right_stick_x;
@@ -175,10 +148,10 @@ public class RC_Base extends LinearOpMode {
                 brMotor.setPower(backRightPower*0.35);
             }
             else {
-                flMotor.setPower(frontLeftPower);
-                blMotor.setPower(backLeftPower);
-                frMotor.setPower(frontRightPower);
-                brMotor.setPower(backRightPower);
+                flMotor.setPower(frontLeftPower*driveSpeed);
+                blMotor.setPower(backLeftPower*driveSpeed);
+                frMotor.setPower(frontRightPower*driveSpeed);
+                brMotor.setPower(backRightPower*driveSpeed);
             }
             double wristPos=Wrist.getPosition();
 
@@ -191,15 +164,19 @@ public class RC_Base extends LinearOpMode {
                 Wrist.setPosition(wristPos);
             }
 
+
+
             if(gamepad2.a){
                 gripper(Gripper,gOpen,gClose);
                 while (gamepad2.a){}
             }
-            double slideTrigToJoy = gamepad2.right_trigger-gamepad2.left_trigger;
-            armTarget = (int) (armTarget+armIncrement*-gamepad2.left_stick_y);
 
-//            double slidetrigToJoy = gamepad1.left_trigger-gamepad1.right_trigger;
-            slideTarget = (int) (slideTarget+slideIncrement*slideTrigToJoy);
+
+
+//            armTarget = (int) (armTarget+armIncrement*-gamepad2.left_stick_y);
+//
+////            double slidetrigToJoy = gamepad1.left_trigger-gamepad1.right_trigger;
+//            slideTarget = (int) (slideTarget+slideIncrement*slideTrigToJoy);
 
             int armPos = arm.getCurrentPosition();
             int slidePos = slide.getCurrentPosition();
@@ -212,31 +189,23 @@ public class RC_Base extends LinearOpMode {
                 slideTarget = Range.clip(slideTarget, 1, 1100);
             }
             armTarget= Range.clip(armTarget,0,2200);
-            armController.setPID(armKp, armKi, armKd);
-
-
-
-            double armPid = armController.calculate(armPos, armTarget);
-
             armAngle= armPos/armTicks_in_degree-65;
+
             armKf=lut.get(slidePos);
             double armff = Math.cos(Math.toRadians(armAngle))*armKf;
-//        double ff = Math.sin(Math.toRadians(armPos/armTicks_in_degree+5)*armKf);
-            double armPower = armPid + armff;
-            arm.setPower(armPower);
+            double armJoy = -gamepad2.left_stick_y*1.0;
+
+            arm.setPower(armJoy+armff);
+
+            double slideff = Math.sin(armAngle)*slideKf;
+            double slideTrigToJoy = (gamepad2.right_trigger-gamepad2.left_trigger)*1.0;
+            slide.setPower(slideTrigToJoy+slideff);
 
 
-
-            slideController.setPID(slideKp, slideKi, slideKd);
-            double slidePid = slideController.calculate(slidePos, slideTarget);
-            double slideff = Math.sin(armAngle*slideKf);
-            double slidePower = slidePid + slideff;
-            slide.setPower(slidePower);
 
             telemetry.addData("armPos",armPos);
             telemetry.addData("armTarget",armTarget);
             telemetry.addData("armff",armff);
-            telemetry.addData("armPid",armPid);
             telemetry.addData("armPower",arm.getPower());
             telemetry.addData("slidePos",slidePos);
             telemetry.addData("slideTarget",slideTarget);
@@ -246,5 +215,36 @@ public class RC_Base extends LinearOpMode {
             telemetry.addData("wrist", Wrist.getPosition());
             telemetry.update();
         }
+    }
+    public void externalPivot(){
+        int armPos = arm.getCurrentPosition();
+        int slidePos = slide.getCurrentPosition();
+        armTarget= Range.clip(armTarget,0,2600);
+        armController.setPID(armKp, armKi, armKd);
+        double armPid = armController.calculate(armPos, armTarget);
+        armAngle= armPos/armTicks_in_degree-65;
+        armKf=lut.get(slidePos);
+        double armff = Math.cos(Math.toRadians(armAngle))*armKf;
+//        double ff = Math.sin(Math.toRadians(armPos/armTicks_in_degree+5)*armKf);
+        double armPower = armPid + armff;
+        arm.setPower(armPower);
+    }
+    public void externalPSlide(){
+        int armPos = arm.getCurrentPosition();
+        int slidePos = slide.getCurrentPosition();
+        if(armPos>=1500) {
+            slidePos = Range.clip(slide.getCurrentPosition(), 1, 2000);
+            slideTarget = Range.clip(slideTarget, 1, 2000);
+        }
+        else {
+            slidePos = Range.clip(slide.getCurrentPosition(), 1, 1100);
+            slideTarget = Range.clip(slideTarget, 1, 1100);
+        }
+        armAngle= armPos/armTicks_in_degree-65;
+        slideController.setPID(slideKp, slideKi, slideKd);
+        double slidePid = slideController.calculate(slidePos, slideTarget);
+        double slideff = Math.sin(armAngle*slideKf);
+        double slidePower = slidePid + slideff;
+        slide.setPower(slidePower);
     }
 }

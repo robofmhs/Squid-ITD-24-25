@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.SubSystems;
+package org.firstinspires.ftc.teamcode.SubSystemsNot;
 
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -22,7 +22,7 @@ public class PIDF_Arm extends OpMode {
     //arm stuff
     private PIDController armController;
 
-    public static double armKp = 0.015, armKi = 0.0005, armKd =0.0008;
+    public static double armKp = 0.0, armKi = 0.000, armKd =0.000;
     public static double armKf = 0.0001;
     public static int armTarget = 0;
     public DcMotorEx arm;
@@ -46,6 +46,7 @@ public class PIDF_Arm extends OpMode {
         slide = hardwareMap.get(DcMotorEx.class, "slide");
         slide.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         slide.setDirection(DcMotorSimple.Direction.REVERSE);
+        arm.setDirection(DcMotorSimple.Direction.REVERSE);
         armController = new PIDController(armKp, armKi, armKd);
         slideController = new PIDController(slideKp, slideKi, slideKd);
         //lut has slide ticks as input, has output as armKf
@@ -66,7 +67,7 @@ public class PIDF_Arm extends OpMode {
         armController.setPID(armKp, armKi, armKd);
         int armPos = arm.getCurrentPosition();
         double armPid = armController.calculate(armPos, armTarget);
-        armAngle= armPos/armTicks_in_degree-85;
+        armAngle= armPos/armTicks_in_degree-10;
         double rijArmgle = Math.abs(armAngle)-90;
         double Paraslide = (2.0/3.0)-(rijArmgle/270);
         armKf=lut.get(slidePos);
@@ -89,6 +90,7 @@ public class PIDF_Arm extends OpMode {
 
         telemetry.addData("armPos",armPos);
         telemetry.addData("armTarget",armTarget);
+        telemetry.addData("armAngle",armAngle);
         telemetry.addData("armff",armff);
         telemetry.addData("armPid",armPid);
         telemetry.addData("armPower",arm.getPower());

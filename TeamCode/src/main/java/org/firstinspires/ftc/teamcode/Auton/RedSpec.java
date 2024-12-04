@@ -8,10 +8,9 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.util.InterpLUT;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -20,7 +19,7 @@ import com.qualcomm.robotcore.util.Range;
 
 @Config
 @Autonomous
-public class RedHuman extends LinearOpMode {
+public class RedSpec extends LinearOpMode {
     private int count=0;
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -173,6 +172,9 @@ public class RedHuman extends LinearOpMode {
 
 //            move("forward", .3, 100);
 //            Extarnal(2000,1);
+            slide.setTargetPosition(0);
+            slide.setPower(.7);
+            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             arm.setTargetPosition(1860);
             arm.setPower(1);
@@ -180,65 +182,157 @@ public class RedHuman extends LinearOpMode {
             Wrist.setPosition(.60);
             move("forward",.3,730);
             sleep(500);
-            slide.setTargetPosition(200);
+            slide.setTargetPosition(190);
             slide.setPower(.7);
             slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            sleep(2000);
+            sleep(1500);
             arm.setTargetPosition(1100);
             arm.setPower(1);
             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             sleep(1500);
-            Wrist.setPosition(.3);
+            Wrist.setPosition(.33);
             Gripper.setPosition(gOpen);
             sleep(500);
             move("backward",.3,210);
-            Wrist.setPosition(.73);
-            arm.setTargetPosition(1100);
+            move("rightTurn", .6,1300);
+            sleep(1000);
+            move("leftStrafe", .5,1300);
+            arm.setTargetPosition(720);
             arm.setPower(1);
             arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            sleep(500);
-            move("leftStrafe",.5,1650);
-            sleep(2000);
-            slide.setTargetPosition(760);
-            slide.setPower(.7);
-            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            sleep(750);
-            arm.setTargetPosition(800);
-            arm.setPower(.3);
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            sleep(1500);
-            Gripper.setPosition(gClose);
             sleep(1000);
-            Wrist.setPosition(.5);
-            slide.setTargetPosition(100);
-            slide.setPower(.7);
-            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            arm.setTargetPosition(2500);
-            arm.setPower(.3);
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            sleep(1700);
-            move("rightTurn",.4,1200);
-            move("backward",.3,420);
-            slide.setTargetPosition(1900);
-            slide.setPower(.7);
-            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            sleep(500);
-            Wrist.setPosition(.3);
-            sleep(500);
-            Gripper.setPosition(gOpen);
-            sleep(1500);
-            arm.setTargetPosition(2000);
-            arm.setPower(.7);
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            move("forward", .5,400);
+            move("forward", .3,100);
             sleep(1000);
-            slide.setTargetPosition(1);
-            slide.setPower(.7);
-            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            sleep(2000);
-            arm.setTargetPosition(100);
-            arm.setPower(.7);
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            sleep(100);
+            move("forward", .3,190);
+//            Gripper.setPosition(gClose);
+//            sleep(500);
+//            Wrist.setPosition(.15);
+//            move("backward", .5,200);
+//            move("rightTurn", .6,1300);
+//            sleep(500);
+//            move("leftStrafe", .5,1700);
+//            sleep(1000);
+//            arm.setTargetPosition(1150);
+//            arm.setPower(1);
+//            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            Wrist.setPosition(.17);
+//            move("forward", .5,330);
+//            sleep(1000);
+//            slide.setTargetPosition(1150);
+//            slide.setPower(.7);
+//            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            sleep(2000);
+//            Gripper.setPosition(gOpen);
+//            sleep(500);
+//            Wrist.setPosition(.17);
+//            slide.setTargetPosition(10);
+//            slide.setPower(.7);
+//            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            arm.setTargetPosition(1300);
+//            arm.setPower(.3);
+//            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            move("backward",1,450);
+//            move("rightStrafe",1,1800);
+
+
+//            Wrist.setPosition(0);
+//            arm.setTargetPosition(100);
+//            arm.setPower(1);
+//            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            move("rightStrafe", .5,1050);
+//            sleep(1000);
+//            move("forward", .7,1500);
+//            move("rightStrafe", .5,600);
+//            move("backward", .5,3200);
+//
+//            arm.setTargetPosition(800);
+//            arm.setPower(1);
+//            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            Wrist.setPosition(.3);
+//
+//            move("forward", .5,700);
+//            move("rightTurn", .7,2600);
+//            move("forward", .3,100);
+//            sleep(1000);
+//            move("forward", .3,50);
+//            Gripper.setPosition(gClose);
+//            sleep(500);
+//            arm.setTargetPosition(1860);
+//            arm.setPower(1);
+//            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            move("backward",1,200);
+//            Wrist.setPosition(.60);
+//            move("rightTurn", 1,2500);
+//            move("leftStrafe", .5,1500);
+//            move("forward",.7,700);
+//            arm.setTargetPosition(1100);
+//            arm.setPower(1);
+//            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            sleep(1500);
+//            Gripper.setPosition(gOpen);
+//            move("backward",1,900);
+//            move("rightStrafe", .5,1500);
+
+
+
+
+//            move("forward", .5,1500);
+
+
+
+
+
+
+
+
+//            arm.setTargetPosition(1100);
+//            arm.setPower(1);
+//            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            sleep(500);
+//            move("leftStrafe",.5,1650);
+//            sleep(2000);
+//            slide.setTargetPosition(760);
+//            slide.setPower(.7);
+//            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            sleep(750);
+//            arm.setTargetPosition(800);
+//            arm.setPower(.3);
+//            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            sleep(1500);
+//            Gripper.setPosition(gClose);
+//            sleep(1000);
+//            Wrist.setPosition(.5);
+//            slide.setTargetPosition(100);
+//            slide.setPower(.7);
+//            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            arm.setTargetPosition(2500);
+//            arm.setPower(.3);
+//            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            sleep(1700);
+//            move("rightTurn",.4,1200);
+//            move("backward",.3,420);
+//            slide.setTargetPosition(1900);
+//            slide.setPower(.7);
+//            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            sleep(500);
+//            Wrist.setPosition(.3);
+//            sleep(500);
+//            Gripper.setPosition(gOpen);
+//            sleep(1500);
+//            arm.setTargetPosition(2000);
+//            arm.setPower(.7);
+//            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            sleep(1000);
+//            slide.setTargetPosition(1);
+//            slide.setPower(.7);
+//            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            sleep(2000);
+//            arm.setTargetPosition(100);
+//            arm.setPower(.7);
+//            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            sleep(100);
 
 
 
@@ -347,7 +441,7 @@ public class RedHuman extends LinearOpMode {
         blMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         brMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        sleep(500);
+        sleep(1000);
 
     }
 }
