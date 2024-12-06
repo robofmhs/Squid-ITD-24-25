@@ -38,9 +38,9 @@ public class FollowerConstants {
 
     // Translational PIDF coefficients (don't use integral)
     public static CustomPIDFCoefficients translationalPIDFCoefficients = new CustomPIDFCoefficients(
-            0.1,
+            0.18,
             0,
-            0,
+            0.01,
             0);
 
     // Translational Integral
@@ -58,7 +58,7 @@ public class FollowerConstants {
     public static CustomPIDFCoefficients headingPIDFCoefficients = new CustomPIDFCoefficients(
             1,
             0,
-            0,
+            0.04,
             0);
 
     // Feed forward constant added on to the heading PIDF
@@ -67,11 +67,12 @@ public class FollowerConstants {
 
     // Drive PIDF coefficients
     public static CustomFilteredPIDFCoefficients drivePIDFCoefficients = new CustomFilteredPIDFCoefficients(
-            0.025,
+            0.02,
             0,
             0.00001,
             0.6,
             0);
+
 
     // Feed forward constant added on to the drive PIDF
     public static double drivePIDFFeedForward = 0.01;
@@ -86,16 +87,16 @@ public class FollowerConstants {
     public static double mass = 11.35;
 
     // Centripetal force to power scaling
-    public static double centripetalScaling = 0.0005;
+    public static double centripetalScaling = 0.0006;
 
 
     // Acceleration of the drivetrain when power is cut in inches/second^2 (should be negative)
     // if not negative, then the robot thinks that its going to go faster under 0 power
-    public static double forwardZeroPowerAcceleration = -30.62719;
+    public static double forwardZeroPowerAcceleration = -34.0443;
 
     // Acceleration of the drivetrain when power is cut in inches/second^2 (should be negative)
     // if not negative, then the robot thinks that its going to go faster under 0 power
-    public static double lateralZeroPowerAcceleration = -70.15554;
+    public static double lateralZeroPowerAcceleration = -78.1236;
 
     // A multiplier for the zero power acceleration to change the speed the robot decelerates at
     // the end of paths.

@@ -26,9 +26,10 @@ public class IntakeSlides implements Subsystem{
     }
     public double getPosition(){return IntakeSlide1.getPosition();}
     public void setPosition(double pos){
-        slidePos=pos;
+        slidePos= Range.clip(pos,.445,.77);
+
     }
     public void changePosition(double x){
-        slidePos+=x;
+        slidePos= Range.clip(slidePos+x,.445,.77);
     }
 }
